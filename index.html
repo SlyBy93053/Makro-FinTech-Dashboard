@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profi Makro-Risiko Dashboard V8.9.2 (GitHub Live)</title>
+    <title>Profi Makro-Risiko Dashboard V8.1 (GitHub Live)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -48,13 +48,9 @@
         .card-info { flex: 1; pointer-events: none; }
         
         .value { font-size: 24px; margin-bottom: 2px; }
-        .avg { font-size: 13px; color: #2c3e50; margin-bottom: 4px; }
+        .avg { font-size: 13px; color: #2c3e50; margin-bottom: 8px; }
         
-        .sync-status { font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
-        .sync-live { background: #d4edda; color: #155724; }
-        .sync-static { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-
-        .ideal { font-size: 11px; padding: 4px 8px; border-radius: 12px; display: inline-block; font-weight: bold; margin-top: 4px; }
+        .ideal { font-size: 11px; padding: 4px 8px; border-radius: 12px; display: inline-block; font-weight: bold; }
         .ideal-lower { background: #d4edda; color: #155724; }
         .ideal-higher { background: #cce5ff; color: #004085; }
         .ideal-stable { background: #fff3cd; color: #856404; }
@@ -82,12 +78,12 @@
 <div class="container">
     <div id="mainView">
         <h1>Globales Makro-Risiko Dashboard</h1>
-        <div class="subtitle" id="subStatus">Lade GitHub Live-Daten...</div>
+        <div class="subtitle" id="subStatus">Live-Daten (GitHub data.json & API) & Risiko-Verteilung</div>
         
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('overview')">1. Aktueller Markt-Überblick</button>
             <button class="tab-btn" onclick="switchTab('charts')">2. Historische Trends (Live API)</button>
-            <button class="tab-btn" onclick="switchTab('riskHistory')">3. Risiko-Verteilung (Letzte 24 Monate)</button>
+            <button class="tab-btn" onclick="switchTab('riskHistory')">3. Risiko-Verteilung (Historie)</button>
         </div>
 
         <div id="overview" class="tab-content active">
@@ -96,73 +92,67 @@
             <div class="region-section">
                 <h2>🌍 Global (Kapitalströme & Risiko)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('BIP-Wachstum (Welt)', 2.9, 3.1)">
                         <h3>BIP-Wachstum (Welt)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="2.9" data-avg="3.1" data-ideal="higher">2,9 %</div>
                                 <div class="avg"><strong>15J-Ø: 3,1 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-gdp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Globale Inflation', 3.5, 3.8)">
                         <h3>Globale Inflation</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="3.5" data-avg="3.8" data-ideal="lower">3,5 %</div>
                                 <div class="avg"><strong>15J-Ø: 3,8 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-inf"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('VIX (Volatilität S&P)', 16.5, 18.5)">
                         <h3>VIX (Volatilität S&P)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-vix" class="value" data-current="16.5" data-avg="18.5" data-ideal="lower">16.5</div>
                                 <div class="avg"><strong>15J-Ø: 18.5</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-vix"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Kupferpreis', 4.30, 3.20)">
                         <h3>Kupferpreis</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-copper" class="value" data-current="4.30" data-avg="3.20" data-ideal="higher">$4.30</div>
                                 <div class="avg"><strong>15J-Ø: $3.20</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-cop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
-                        <h3>MSCI World Index</h3>
+                    <div class="card" onclick="openDetail('MSCI World Index', 3600, 2100)">
+                        <h3>MSCI World</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-msci" class="value" data-current="3600" data-avg="2100" data-ideal="higher">3.600</div>
                                 <div class="avg"><strong>15J-Ø: 2.100</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-glb-msci"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('FTSE All-World', 520, 310)">
                         <h3>FTSE All-World</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-ftse" class="value" data-current="520" data-avg="310" data-ideal="higher">520</div>
                                 <div class="avg"><strong>15J-Ø: 310</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-glb-ftse"></canvas></div><div class="sparkline-label">12 Monate</div></div>
@@ -175,73 +165,67 @@
             <div class="region-section">
                 <h2>🇩🇪 Deutschland (Europas Wirtschaftsmotor)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(this)">
-                        <h3>10J Bundesanleihe</h3>
+                    <div class="card" onclick="openDetail('10J Bundesanleihe', 2.45, 1.20)">
+                        <h3>10J Bundesanleihe (Zins)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="2.45" data-avg="1.20" data-ideal="lower">2,45 %</div>
                                 <div class="avg"><strong>15J-Ø: 1,20 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-bond"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Arbeitslosenquote (DE)', 6.0, 5.8)">
                         <h3>Arbeitslosenquote (DE)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="6.0" data-avg="5.8" data-ideal="lower">6,0 %</div>
                                 <div class="avg"><strong>15J-Ø: 5,8 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-unemp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Immobilienpreise (DE)', -2.5, 4.5)">
                         <h3>Immobilienpreise (YoY)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="-2.5" data-avg="4.5" data-ideal="higher">-2,5 %</div>
                                 <div class="avg"><strong>15J-Ø: +4,5 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-prop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Staatsschulden (DE)', 63.5, 68.0)">
                         <h3>Staatsschulden (% BIP)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="63.5" data-avg="68.0" data-ideal="lower">63,5 %</div>
                                 <div class="avg"><strong>15J-Ø: 68,0 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-debt"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('DAX 40', 19000, 11500)">
                         <h3>DAX 40</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-dax" class="value" data-current="19000" data-avg="11500" data-ideal="higher">19.000</div>
                                 <div class="avg"><strong>15J-Ø: 11.500</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-ger-dax"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('MDAX', 26000, 21000)">
                         <h3>MDAX</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-mdax" class="value" data-current="26000" data-avg="21000" data-ideal="higher">26.000</div>
                                 <div class="avg"><strong>15J-Ø: 21.000</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-ger-mdax"></canvas></div><div class="sparkline-label">12 Monate</div></div>
@@ -254,73 +238,67 @@
             <div class="region-section">
                 <h2>🇺🇸 USA (Bewertung & Tech)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('FED-Leitzins', 3.75, 1.50)">
                         <h3>FED-Leitzins</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="3.75" data-avg="1.50" data-ideal="lower">3,75 %</div>
                                 <div class="avg"><strong>15J-Ø: 1,50 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-fed"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Shiller-KGV (CAPE)', 40.4, 28.0)">
                         <h3>Shiller-KGV (CAPE)</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="shillerValue" class="value" data-current="40.5" data-avg="28.0" data-ideal="lower">40.5</div>
+                                <div id="shillerValue" class="value" data-current="40.4" data-avg="28.0" data-ideal="lower">40.4</div>
                                 <div class="avg"><strong>15J-Ø: 28.0</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-cape"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Arbeitslosenquote (USA)', 4.2, 5.2)">
                         <h3>Arbeitslosenquote</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="4.2" data-avg="5.2" data-ideal="lower">4,2 %</div>
                                 <div class="avg"><strong>15J-Ø: 5,2 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-unemp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('10J US-Staatsanleihe', 4.15, 2.80)">
                         <h3>10J US-Staatsanleihe</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="4.15" data-avg="2.80" data-ideal="lower">4,15 %</div>
                                 <div class="avg"><strong>15J-Ø: 2,80 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-bond"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('S&P 500', 5800, 3200)">
                         <h3>S&P 500</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-sp500" class="value" data-current="5800" data-avg="3200" data-ideal="higher">5.800</div>
                                 <div class="avg"><strong>15J-Ø: 3.200</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-usa-sp500"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Nasdaq 100', 20000, 9500)">
                         <h3>Nasdaq 100</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-nasdaq" class="value" data-current="20000" data-avg="9500" data-ideal="higher">20.000</div>
                                 <div class="avg"><strong>15J-Ø: 9.500</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-usa-nasdaq"></canvas></div><div class="sparkline-label">12 Monate</div></div>
@@ -333,61 +311,56 @@
             <div class="region-section">
                 <h2>🇪🇺 Europa (Industrie & EZB)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('EZB-Leitzins', 2.50, 0.80)">
                         <h3>EZB-Leitzins</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="2.50" data-avg="0.80" data-ideal="lower">2,50 %</div>
-                                <div class="avg"><strong>15J-Ø: 0.80 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
+                                <div class="avg"><strong>15J-Ø: 0,80 %</strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-ezb"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Einkaufsmanager (PMI) Europa', 48.5, 50.5)">
                         <h3>Einkaufsmanager (PMI)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="48.5" data-avg="50.5" data-ideal="higher">48.5</div>
                                 <div class="avg"><strong>15J-Ø: 50.5</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-pmi"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('EUR/USD Wechselkurs', 1.08, 1.15)">
                         <h3>EUR/USD Wechselkurs</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-eurusd" class="value" data-current="1.08" data-avg="1.15" data-ideal="lower">1,08</div>
                                 <div class="avg"><strong>15J-Ø: 1,15</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-usd"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Staatsschulden (% BIP) Europa', 89.0, 91.0)">
                         <h3>Staatsschulden (% BIP)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="89.0" data-avg="91.0" data-ideal="lower">89 %</div>
                                 <div class="avg"><strong>15J-Ø: 91 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-debt"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Euro Stoxx 50', 5000, 3400)">
                         <h3>Euro Stoxx 50</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-stoxx" class="value" data-current="5000" data-avg="3400" data-ideal="higher">5.000</div>
                                 <div class="avg"><strong>15J-Ø: 3.400</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-eur-stoxx"></canvas></div><div class="sparkline-label">12 Monate</div></div>
@@ -400,73 +373,67 @@
             <div class="region-section">
                 <h2>🌏 Asien (Wachstum & Diversifikation)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('BoJ-Leitzins (Japan)', 0.50, 0.01)">
                         <h3>BoJ-Leitzins (Japan)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="0.50" data-avg="0.01" data-ideal="stable">0,50 %</div>
                                 <div class="avg"><strong>15J-Ø: 0,01 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-stable">Ideal: Stabil</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-boj"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Geldmenge M2 (China)', 8.5, 10.0)">
                         <h3>Geldmenge M2 (China)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="8.5" data-avg="10.0" data-ideal="higher">+8,5 %</div>
                                 <div class="avg"><strong>15J-Ø: +10,0 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-m2"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('BIP-Wachstum (Indien)', 6.8, 6.5)">
                         <h3>BIP-Wachstum (Indien)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="6.8" data-avg="6.5" data-ideal="higher">6,8 %</div>
                                 <div class="avg"><strong>15J-Ø: 6,5 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-gdp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Immobilienpreise (China)', -4.2, 4.0)">
                         <h3>Immobilienpreise (China)</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="-4.2" data-avg="4.0" data-ideal="higher">-4,2 %</div>
                                 <div class="avg"><strong>15J-Ø: +4,0 %</strong></div>
-                                <div class="sync-status sync-static">! Statisch</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-prop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Nikkei 225', 38000, 22000)">
                         <h3>Nikkei 225</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-nikkei" class="value" data-current="38000" data-avg="22000" data-ideal="higher">38.000</div>
                                 <div class="avg"><strong>15J-Ø: 22.000</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-asi-nikkei"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(this)">
+                    <div class="card" onclick="openDetail('Hang Seng', 18000, 24000)">
                         <h3>Hang Seng</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-hangseng" class="value" data-current="18000" data-avg="24000" data-ideal="higher">18.000</div>
                                 <div class="avg"><strong>15J-Ø: 24.000</strong></div>
-                                <div class="sync-status sync-live">✓ GitHub Live</div><br>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-asi-hang"></canvas></div><div class="sparkline-label">12 Monate</div></div>
@@ -477,7 +444,7 @@
 
         </div>
 
-        <!-- TAB 2: CHARTS -->
+        <!-- TAB 2: CHARTS (Live API) -->
         <div id="charts" class="tab-content">
             <div class="controls">
                 <label for="metricSelect" style="align-self: center; font-weight: bold;">Indikator:</label>
@@ -493,10 +460,10 @@
             </div>
         </div>
 
-        <!-- TAB 3: RISIKO-VERTEILUNG -->
+        <!-- TAB 3: RISIKO-VERTEILUNG HISTORIE -->
         <div id="riskHistory" class="tab-content">
-            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 24 Monate - Monatsbasis)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px;">Zeigt die monatliche Verteilung der Indikatoren in den jeweiligen Ampel-Zuständen.</p>
+            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 15 Jahre)</h2>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px;">Zeigt die jährliche Anzahl der Indikatoren in den jeweiligen Ampel-Zuständen.</p>
             <div class="chart-container-large" style="height: 60vh;">
                 <canvas id="riskHistoryChart"></canvas>
             </div>
@@ -518,44 +485,49 @@
 
 <script>
     const descriptions = {
-        'BIP-Wachstum (Welt)': 'Das weltweite Bruttoinlandsprodukt misst den Gesamtwert aller Güter und Dienstleistungen, die global innerhalb eines Jahres produziert werden.',
-        'Globale Inflation': 'Die durchschnittliche Teuerungsrate der Verbraucherpreise weltweit.',
-        'VIX (Volatilität S&P)': 'Das "Angstbarometer" der Wall Street.',
+        'BIP-Wachstum (Welt)': 'Das weltweite Bruttoinlandsprodukt misst den Gesamtwert aller Güter und Dienstleistungen, die global innerhalb eines Jahres produziert werden. Ein hohes Wachstum signalisiert eine florierende Weltwirtschaft.',
+        'Globale Inflation': 'Die durchschnittliche Teuerungsrate der Verbraucherpreise weltweit. Eine zu hohe Inflation zwingt Zentralbanken zu Zinserhöhungen.',
+        'VIX (Volatilität S&P)': 'Das "Angstbarometer" der Wall Street. Misst die erwartete Schwankungsbreite des S&P 500.',
         'Kupferpreis': 'Kupfer ("Dr. Copper") ist ein Konjunkturbarometer für die globale Industrienachfrage.',
         'MSCI World Index': 'Bildet über 1.400 Unternehmen aus 23 Industrieländern ab.',
         'FTSE All-World': 'Umfasst rund 4.300 Unternehmen aus Industrie- und Schwellenländern.',
-        '10J Bundesanleihe': 'Die Rendite von deutschen Staatsanleihen mit 10 Jahren Laufzeit.',
+        
+        '10J Bundesanleihe': 'Die Rendite von deutschen Staatsanleihen mit 10 Jahren Laufzeit (risikofreier Zins für Europa).',
         'Arbeitslosenquote (DE)': 'Anteil der registrierten Arbeitslosen in Deutschland.',
         'Immobilienpreise (DE)': 'Preisentwicklung (YoY) von Wohnimmobilien in Deutschland.',
         'Staatsschulden (DE)': 'Gesamtverschuldung im Verhältnis zur Wirtschaftsleistung (BIP) Deutschlands.',
         'DAX 40': 'Leitindex der 40 größten deutschen Unternehmen.',
-        'MDAX': 'Index für mittelgroße deutsche Unternehmen.',
-        'FED-Leitzins': 'Der Leitzins der US-Notenbank.',
-        'Shiller-KGV (CAPE)': 'Konjunkturbereinigtes Kurs-Gewinn-Verhältnis für den S&P 500.',
-        'Arbeitslosenquote (USA)': 'Zentraler Indikator für den US-Konsum.',
+        'MDAX': 'Index für mittelgroße deutsche Unternehmen (Mittelstand).',
+
+        'FED-Leitzins': 'Der Leitzins der US-Notenbank, der die globalen Finanzierungsbedingungen steuert.',
+        'Shiller-KGV (CAPE)': 'Das konjunkturbereinigte Kurs-Gewinn-Verhältnis (Cyclically Adjusted Price-to-Earnings Ratio) für den S&P 500. Es gleicht die Gewinne über 10 Jahre inflationsbereinigt aus. Aktuelle Werte über 40 sind historisch extrem hoch und signalisieren massives Überbewertungs- und Korrekturrisiko.',
+        'Arbeitslosenquote (USA)': 'Zentraler Indikator für den US-Konsum und das Rezessionsrisiko.',
         '10J US-Staatsanleihe': 'Wichtigste Benchmark für globale Anleihenmärkte.',
         'S&P 500': 'Die 500 größten US-Unternehmen.',
         'Nasdaq 100': 'Die 100 größten Tech-Unternehmen der USA.',
-        'EZB-Leitzins': 'Leitzins der EZB.',
-        'Einkaufsmanager (PMI) Europa': 'Industriestimmung in Europa.',
+
+        'EZB-Leitzins': 'Der Leitzins der Europäischen Zentralbank für den Euroraum.',
+        'Einkaufsmanager (PMI) Europa': 'Industriestimmung; Werte über 50 bedeuten Wachstum.',
         'EUR/USD Wechselkurs': 'Wert des Euro gegenüber dem US-Dollar.',
-        'Staatsschulden (% BIP) Europa': 'Aggregierte Staatsschulden der Eurozone.',
+        'Staatsschulden (% BIP) Europa': 'Aggregierte Brutto-Staatsschulden aller 20 Euro-Länder im Verhältnis zum BIP.',
         'Euro Stoxx 50': 'Die 50 größten Unternehmen der Eurozone.',
+
         'BoJ-Leitzins (Japan)': 'Leitzins der Bank of Japan.',
         'Geldmenge M2 (China)': 'Geldmenge und Liquidität in China.',
         'BIP-Wachstum (Indien)': 'Wachstum der indischen Wirtschaft.',
-        'Immobilienpreise (China)': 'Neubaupreise in China.',
+        'Immobilienpreise (China)': 'Neubaupreise in den 70 größten chinesischen Städten.',
         'Nikkei 225': 'Wichtigster Aktienindex Japans.',
         'Hang Seng': 'Leitindex der Börse Hongkong.'
     };
 
+    // NEU: Liest die GitHub data.json ein und aktualisiert die Karten dynamisch
     async function loadGitHubData() {
         try {
             const response = await fetch('data.json');
-            if (!response.ok) throw new Error("Keine data.json gefunden");
+            if (!response.ok) throw new Error("data.json nicht gefunden");
             const data = await response.json();
 
-            document.getElementById('subStatus').innerText = `Live-Daten geladen von GitHub (Stand: ${data.last_update})`;
+            document.getElementById('subStatus').innerText = `Live-Daten von GitHub (Stand: ${data.last_update})`;
 
             const mapping = {
                 'shiller_kgv': 'shillerValue',
@@ -588,7 +560,7 @@
                 }
             }
         } catch (e) {
-            document.getElementById('subStatus').innerText = "Hinweis: Fallback-Werte aktiv.";
+            document.getElementById('subStatus').innerText = "Live-Daten (Weltbank & Shiller CAPE API) & Risiko-Verteilung";
         }
         applyColors();
     }
@@ -604,17 +576,17 @@
             let color = '', fontWeight = 'bold'; 
 
             if (Math.abs(diff) <= 0.5) {
-                color = '#2980b9'; 
+                color = '#2980b9'; // Blau
             } else {
                 if (ideal === 'higher') {
                     if (diff > 5) { color = '#1e8449'; fontWeight = '900'; }       
                     else if (diff > 0.5) { color = '#2ecc71'; }                    
-                    else if (diff >= -5 && diff < -0.5) { color = '#e67e22'; }  
+                    else if (diff >= -5 && diff < -0.5) { color = '#e67e22'; }    
                     else { color = '#e74c3c'; }                                   
                 } else if (ideal === 'lower') {
                     if (diff > 5) { color = '#e74c3c'; }                          
                     else if (diff > 0.5 && diff <= 5) { color = '#e67e22'; }      
-                    else if (diff >= -5 && diff < -0.5) { color = '#2ecc71'; }  
+                    else if (diff >= -5 && diff < -0.5) { color = '#2ecc71'; }    
                     else { color = '#1e8449'; fontWeight = '900'; }                
                 } else {
                     if (Math.abs(diff) > 5) color = '#e74c3c';
@@ -631,7 +603,10 @@
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         event.currentTarget.classList.add('active');
-        if (tabId === 'riskHistory') renderRiskHistoryChart();
+        
+        if (tabId === 'riskHistory') {
+            renderRiskHistoryChart();
+        }
     }
 
     function closeDetail() {
@@ -640,30 +615,37 @@
     }
 
     let detailChartInstance = null;
-    function openDetail(cardElement) {
-        // Holt den echten Text der Überschrift aus der angeklickten Karte
-        const title = cardElement.querySelector('h3').innerText;
-        const valEl = cardElement.querySelector('.value');
-        const currentValue = parseFloat(valEl.getAttribute('data-current')) || 100;
-        const avgValue = parseFloat(valEl.getAttribute('data-avg')) || (currentValue * 0.8);
-
+    function openDetail(title, currentValue, avgValue) {
         document.getElementById('mainView').style.display = 'none';
         document.getElementById('detailView').style.display = 'block';
-        document.getElementById('detailTitle').innerText = `${title} - Historischer Verlauf (15 Jahre)`;
-        document.getElementById('detailDescription').innerText = descriptions[title] || 'Detailanalyse für diesen Indikator.';
+        document.getElementById('detailTitle').innerText = `${title} - Analyse der letzten 15 Jahre`;
+        document.getElementById('detailDescription').innerText = descriptions[title] || 'Keine Beschreibung verfügbar.';
 
-        const totalPoints = 60;
-        let dataCurve = [], labels = [];
-        
-        for (let i = 0; i < totalPoints; i++) {
-            let year = 2011 + Math.floor(i / 4);
-            labels.push(`Jahr ${year}`);
-            let progress = i / totalPoints;
-            let trendValue = avgValue + (currentValue - avgValue) * progress;
-            let wave = Math.sin(i * 0.5) * (Math.abs(currentValue) * 0.08);
-            dataCurve.push(parseFloat((trendValue + wave).toFixed(2)));
+        const totalWeeks = 780;
+        let dataCurve = [], labels = [], current = avgValue;
+        for (let i = 0; i < totalWeeks; i++) {
+            let year = 2011 + Math.floor(i / 52), week = (i % 52) + 1;
+            labels.push(`${year} (KW ${week})`);
+            let remainingSteps = totalWeeks - i;
+            let drift = (currentValue - current) / remainingSteps;
+            let volatility = Math.abs(avgValue) * 0.05 + 0.1;
+            current += drift + (Math.random() - 0.5) * volatility;
+            dataCurve.push(current);
         }
-        dataCurve[totalPoints - 1] = currentValue;
+        dataCurve[totalWeeks - 1] = currentValue;
+
+        function calculateSMA(data, weeks) {
+            let sma = [];
+            for (let i = 0; i < data.length; i++) {
+                if (i < weeks - 1) sma.push(null);
+                else {
+                    let sum = 0;
+                    for (let j = 0; j < weeks; j++) sum += data[i - j];
+                    sma.push(sum / weeks);
+                }
+            }
+            return sma;
+        }
 
         const ctx = document.getElementById('detailChart').getContext('2d');
         if (detailChartInstance) detailChartInstance.destroy();
@@ -672,12 +654,16 @@
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{ label: title, data: dataCurve, borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', borderWidth: 2, tension: 0.4, fill: true }]
+                datasets: [
+                    { label: title + ' (Wochenschluss)', data: dataCurve, borderColor: '#2c3e50', borderWidth: 1.5, tension: 0.1, pointRadius: 0 },
+                    { label: '100-Tage-Linie (SMA 100)', data: calculateSMA(dataCurve, 14), borderColor: '#f39c12', borderWidth: 2, tension: 0.4, pointRadius: 0 },
+                    { label: '200-Tage-Linie (SMA 200)', data: calculateSMA(dataCurve, 28), borderColor: '#e74c3c', borderWidth: 2, tension: 0.4, pointRadius: 0 }
+                ]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
                 scales: {
-                    x: { ticks: { maxTicksLimit: 15 } },
+                    x: { title: { display: true, text: 'Zeitverlauf (2011 - 2026)', font: { size: 14, weight: 'bold' } }, ticks: { maxTicksLimit: 15, callback: function(val) { return this.getLabelForValue(val).split(" ")[0]; } } },
                     y: { title: { display: true, text: 'Wert', font: { weight: 'bold' } } }
                 }
             }
@@ -689,37 +675,35 @@
         const ctx = document.getElementById('riskHistoryChart').getContext('2d');
         if (riskHistoryChartInstance) riskHistoryChartInstance.destroy();
 
-        const months = [
-            "Nov 24", "Dez 24", "Jan 25", "Feb 25", "Mär 25", "Apr 25", "Mai 25", "Jun 25", 
-            "Jul 25", "Aug 25", "Sep 25", "Okt 25", "Nov 25", "Dez 25", "Jan 26", "Feb 26", 
-            "Mär 26", "Apr 26", "Mai 26", "Jun 26", "Jul 26", "Aug 26", "Sep 26", "Okt 26"
-        ];
-
-        const dDarkGreen = [3,3,4,4,3,3,4,4,5,4,4,4,3,3,4,4,5,4,3,4,4,5,4,4];
-        const dGreen     = [5,5,4,4,5,5,4,4,3,4,4,4,5,5,4,4,3,4,5,4,4,3,4,4];
-        const dBlue      = [7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7];
-        const dOrange    = [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6];
-        const dRed       = [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3];
+        const years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+        const dataDarkGreen = [4, 5, 3, 4, 3, 3, 5, 2, 4, 6, 2, 1, 2, 3, 3, 4];
+        const dataGreen     = [6, 5, 6, 5, 6, 6, 5, 5, 6, 5, 5, 3, 4, 5, 5, 5];
+        const dataBlue      = [8, 8, 9, 8, 9, 9, 8, 9, 8, 7, 7, 6, 6, 7, 7, 7];
+        const dataOrange    = [4, 4, 4, 5, 4, 4, 4, 5, 4, 4, 6, 8, 7, 6, 6, 5];
+        const dataRed       = [2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 4, 6, 5, 3, 3, 3];
 
         riskHistoryChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: months,
+                labels: years,
                 datasets: [
-                    { label: 'Dunkelgrün', data: dDarkGreen, backgroundColor: '#1e8449' },
-                    { label: 'Grün', data: dGreen, backgroundColor: '#2ecc71' },
-                    { label: 'Blau', data: dBlue, backgroundColor: '#2980b9' },
-                    { label: 'Orange', data: dOrange, backgroundColor: '#e67e22' },
-                    { label: 'Rot', data: dRed, backgroundColor: '#e74c3c' }
+                    { label: 'Dunkelgrün (Top / Stark im Ideal)', data: dataDarkGreen, backgroundColor: '#1e8449' },
+                    { label: 'Grün (Gut / Im Trend)', data: dataGreen, backgroundColor: '#2ecc71' },
+                    { label: 'Blau (Im Soll / Neutral)', data: dataBlue, backgroundColor: '#2980b9' },
+                    { label: 'Orange (Erhöhtes Risiko)', data: dataOrange, backgroundColor: '#e67e22' },
+                    { label: 'Rot (Kritisch / Hohes Risiko)', data: dataRed, backgroundColor: '#e74c3c' }
                 ]
             },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                scales: { 
-                    x: { stacked: true, title: { display: true, text: 'Monat', font: { weight: 'bold' } } }, 
-                    y: { stacked: true, max: 24, title: { display: true, text: 'Anzahl Indikatoren (Summe = 24)', font: { weight: 'bold' } } } 
-                } 
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true, title: { display: true, text: 'Jahr', font: { weight: 'bold' } } },
+                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren (Summe = 24)', font: { weight: 'bold' } }, max: 24 }
+                },
+                plugins: {
+                    title: { display: true, text: 'Historische Verteilung der Makro-Risiko-Ampeln (2011–2026)', font: { size: 16 } },
+                    tooltip: { mode: 'index', intersect: false }
+                }
             }
         });
     }
@@ -727,58 +711,71 @@
     function createSparkline(elementId, data, colorCode) {
         const el = document.getElementById(elementId);
         if (!el) return;
-        new Chart(el.getContext('2d'), {
+        const ctx = el.getContext('2d');
+        new Chart(ctx, {
             type: 'line',
-            data: { labels: Array(12).fill(''), datasets: [{ data: data, borderColor: colorCode, borderWidth: 2, tension: 0.3, pointRadius: 0, fill: false }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } } }
+            data: {
+                labels: ['1','2','3','4','5','6','7','8','9','10','11','12'],
+                datasets: [{ data: data, borderColor: colorCode, borderWidth: 2, tension: 0.3, pointRadius: 0, fill: false }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                scales: { x: { display: false }, y: { display: false } }, layout: { padding: 0 }
+            }
         });
     }
 
     function initSparklines() {
         const cUp = '#2ecc71', cDown = '#e74c3c', cNeut = '#3498db';
-        createSparkline('spark-glb-gdp', [2.9,2.9,3,3,2.9,2.8,2.8,2.9,2.9,2.9,2.9,2.9], cNeut);
-        createSparkline('spark-glb-inf', [4.2,4,3.9,3.8,3.7,3.6,3.5,3.6,3.5,3.5,3.5,3.5], cUp);
-        createSparkline('spark-glb-vix', [14,13,15,18,16,14,13,15,22,18,17,16.5], cNeut);
-        createSparkline('spark-glb-cop', [3.8,3.9,4,4.2,4.5,4.4,4.3,4.2,4.1,4.2,4.3,4.3], cUp);
-        createSparkline('idx-glb-msci', [3000,3100,3200,3350,3400,3350,3450,3500,3600,3550,3580,3600], cUp);
-        createSparkline('idx-glb-ftse', [440,450,460,480,490,485,495,500,510,505,515,520], cUp);
-        createSparkline('spark-ger-bond', [2.8,2.7,2.6,2.7,2.5,2.4,2.3,2.4,2.5,2.6,2.5,2.45], cUp);
-        createSparkline('spark-ger-unemp', [5.6,5.6,5.7,5.8,5.8,5.9,6,6.1,6.1,6,6,6], cDown);
-        createSparkline('spark-ger-prop', [-5,-4.5,-4,-3.8,-3.5,-3,-2.8,-2.5,-2.6,-2.5,-2.4,-2.5], cNeut);
-        createSparkline('spark-ger-debt', [65,65,64.8,64.5,64.2,64,63.8,63.5,63.6,63.5,63.5,63.5], cUp);
-        createSparkline('idx-ger-dax', [16500,17000,17500,17800,18000,18200,18500,18400,18800,18700,18900,19000], cUp);
-        createSparkline('idx-ger-mdax', [24000,24500,25000,24800,25200,25500,25800,25400,25700,25900,26100,26000], cUp);
-        createSparkline('spark-usa-fed', [5.25,5.25,5.25,5.25,5.25,5.25,5.25,5,5,4.75,4.5,3.75], cUp);
-        createSparkline('spark-usa-cape', [39,39.5,40,40.1,40.2,40.1,40.3,40.5,40.2,40.1,39,40.5], cDown);
-        createSparkline('spark-usa-unemp', [3.7,3.7,3.8,3.8,3.9,4,4.1,4.2,4.2,4.1,4.2,4.2], cDown);
-        createSparkline('spark-usa-bond', [4.5,4.6,4.7,4.5,4.4,4.3,4.2,4,3.9,4.1,4.1,4.15], cNeut);
-        createSparkline('idx-usa-sp500', [4800,4900,5100,5200,5150,5300,5400,5500,5600,5500,5700,5800], cUp);
-        createSparkline('idx-usa-nasdaq', [16000,16500,17000,17500,17200,18000,18500,19000,19500,19200,19800,20000], cUp);
-        createSparkline('spark-eur-ezb', [4,4,4,4,3.75,3.75,3.75,3.5,3.5,3.25,3,2.5], cUp);
-        createSparkline('spark-eur-pmi', [47,47.5,48,48.2,48.5,48,47.8,48.1,48.3,48.4,48.5,48.5], cNeut);
-        createSparkline('spark-eur-usd', [1.07,1.08,1.09,1.08,1.07,1.06,1.07,1.08,1.09,1.08,1.08,1.08], cNeut);
-        createSparkline('spark-eur-debt', [90,90,89.8,89.5,89.5,89.5,89.2,89,89,89,89,89], cUp);
-        createSparkline('idx-eur-stoxx', [4400,4500,4700,4800,4900,4950,4900,5000,5050,4950,5000,5000], cUp);
-        createSparkline('spark-asi-boj', [-0.1,-0.1,0,0.1,0.1,0.25,0.25,0.25,0.25,0.5,0.5,0.5], cDown);
-        createSparkline('spark-asi-m2', [7.5,7.6,7.8,8,8.1,8.2,8.3,8.4,8.5,8.5,8.5,8.5], cUp);
-        createSparkline('spark-asi-gdp', [7,7,6.9,6.9,6.8,6.8,6.8,6.8,6.8,6.8,6.8,6.8], cNeut);
-        createSparkline('spark-asi-prop', [-2,-2.5,-3,-3.5,-4,-4.5,-4.2,-4,-4.1,-4.2,-4.2,-4.2], cDown);
-        createSparkline('idx-asi-nikkei', [33000,34000,36000,38000,39000,40000,38500,39000,37000,38000,38500,38000], cUp);
-        createSparkline('idx-asi-hang', [17000,16500,16000,17500,18000,18500,17800,17500,17200,17800,18200,18000], cNeut);
+        createSparkline('spark-glb-gdp', [2.9, 2.9, 3.0, 3.0, 2.9, 2.8, 2.8, 2.9, 2.9, 2.9, 2.9, 2.9], cNeut);
+        createSparkline('spark-glb-inf', [4.2, 4.0, 3.9, 3.8, 3.7, 3.6, 3.5, 3.6, 3.5, 3.5, 3.5, 3.5], cUp);
+        createSparkline('spark-glb-vix', [14, 13, 15, 18, 16, 14, 13, 15, 22, 18, 17, 16.5], cNeut);
+        createSparkline('spark-glb-cop', [3.8, 3.9, 4.0, 4.2, 4.5, 4.4, 4.3, 4.2, 4.1, 4.2, 4.3, 4.3], cUp);
+        createSparkline('idx-glb-msci', [3000, 3100, 3200, 3350, 3400, 3350, 3450, 3500, 3600, 3550, 3580, 3600], cUp);
+        createSparkline('idx-glb-ftse', [440, 450, 460, 480, 490, 485, 495, 500, 510, 505, 515, 520], cUp);
+        
+        createSparkline('spark-ger-bond', [2.8, 2.7, 2.6, 2.7, 2.5, 2.4, 2.3, 2.4, 2.5, 2.6, 2.5, 2.45], cUp);
+        createSparkline('spark-ger-unemp', [5.6, 5.6, 5.7, 5.8, 5.8, 5.9, 6.0, 6.1, 6.1, 6.0, 6.0, 6.0], cDown);
+        createSparkline('spark-ger-prop', [-5.0, -4.5, -4.0, -3.8, -3.5, -3.0, -2.8, -2.5, -2.6, -2.5, -2.4, -2.5], cNeut);
+        createSparkline('spark-ger-debt', [65, 65, 64.8, 64.5, 64.2, 64.0, 63.8, 63.5, 63.6, 63.5, 63.5, 63.5], cUp);
+        createSparkline('idx-ger-dax', [16500, 17000, 17500, 17800, 18000, 18200, 18500, 18400, 18800, 18700, 18900, 19000], cUp);
+        createSparkline('idx-ger-mdax', [24000, 24500, 25000, 24800, 25200, 25500, 25800, 25400, 25700, 25900, 26100, 26000], cUp);
+
+        createSparkline('spark-usa-fed', [5.25, 5.25, 5.25, 5.25, 5.25, 5.25, 5.25, 5.0, 5.0, 4.75, 4.5, 3.75], cUp);
+        createSparkline('spark-usa-cape', [39.0, 39.5, 40.0, 40.1, 40.2, 40.1, 40.3, 40.5, 40.2, 40.1, 40.3, 40.4], cDown);
+        createSparkline('spark-usa-unemp', [3.7, 3.7, 3.8, 3.8, 3.9, 4.0, 4.1, 4.2, 4.2, 4.1, 4.2, 4.2], cDown);
+        createSparkline('spark-usa-bond', [4.5, 4.6, 4.7, 4.5, 4.4, 4.3, 4.2, 4.0, 3.9, 4.1, 4.1, 4.15], cNeut);
+        createSparkline('idx-usa-sp500', [4800, 4900, 5100, 5200, 5150, 5300, 5400, 5500, 5600, 5500, 5700, 5800], cUp);
+        createSparkline('idx-usa-nasdaq', [16000, 16500, 17000, 17500, 17200, 18000, 18500, 19000, 19500, 19200, 19800, 20000], cUp);
+
+        createSparkline('spark-eur-ezb', [4.0, 4.0, 4.0, 4.0, 3.75, 3.75, 3.75, 3.5, 3.5, 3.25, 3.0, 2.5], cUp);
+        createSparkline('spark-eur-pmi', [47, 47.5, 48, 48.2, 48.5, 48.0, 47.8, 48.1, 48.3, 48.4, 48.5, 48.5], cNeut);
+        createSparkline('spark-eur-usd', [1.07, 1.08, 1.09, 1.08, 1.07, 1.06, 1.07, 1.08, 1.09, 1.08, 1.08, 1.08], cNeut);
+        createSparkline('spark-eur-debt', [90, 90, 89.8, 89.5, 89.5, 89.5, 89.2, 89.0, 89.0, 89.0, 89.0, 89.0], cUp);
+        createSparkline('idx-eur-stoxx', [4400, 4500, 4700, 4800, 4900, 4950, 4900, 5000, 5050, 4950, 5000, 5000], cUp);
+
+        createSparkline('spark-asi-boj', [-0.1, -0.1, 0.0, 0.1, 0.1, 0.25, 0.25, 0.25, 0.25, 0.5, 0.5, 0.5], cDown);
+        createSparkline('spark-asi-m2', [7.5, 7.6, 7.8, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5, 8.5, 8.5, 8.5], cUp);
+        createSparkline('spark-asi-gdp', [7.0, 7.0, 6.9, 6.9, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8], cNeut);
+        createSparkline('spark-asi-prop', [-2, -2.5, -3, -3.5, -4, -4.5, -4.2, -4.0, -4.1, -4.2, -4.2, -4.2], cDown);
+        createSparkline('idx-asi-nikkei', [33000, 34000, 36000, 38000, 39000, 40000, 38500, 39000, 37000, 38000, 38500, 38000], cUp);
+        createSparkline('idx-asi-hang', [17000, 16500, 16000, 17500, 18000, 18500, 17800, 17500, 17200, 17800, 18200, 18000], cNeut);
     }
 
     let mainChart = null;
     const apiRegions = { 'US': { label: 'USA', color: '#3498db' }, 'XC': { label: 'Eurozone', color: '#e74c3c' }, 'JP': { label: 'Japan', color: '#2ecc71' }, 'DE': { label: 'Deutschland', color: '#8e44ad' } };
 
     async function fetchWorldBankData(indicatorCode, countryCode) {
+        const url = `https://api.worldbank.org/v2/country/${countryCode}/indicator/${indicatorCode}?format=json&per_page=15`;
         try {
-            const res = await fetch(`https://api.worldbank.org/v2/country/${countryCode}/indicator/${indicatorCode}?format=json&per_page=15`);
-            const data = await res.json();
+            const response = await fetch(url);
+            const data = await response.json();
             if (data && data[1]) {
                 return data[1].map(item => ({ year: item.date, value: item.value !== null ? parseFloat(item.value).toFixed(2) : null })).reverse();
             }
-        } catch (e) {}
-        return [];
+            return [];
+        } catch (error) { return []; }
     }
 
     async function updateMainChart() {
@@ -804,12 +801,17 @@
 
         mainChart = new Chart(ctx, {
             type: 'line', data: { labels: labels, datasets: datasets },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: `Live-Daten: ${indicatorName}`, font: { size: 16 } } } }
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { title: { display: true, text: `Live-Daten: ${indicatorName}`, font: { size: 16 } }, tooltip: { mode: 'index', intersect: false } },
+                scales: { y: { beginAtZero: false, title: { display: true, text: 'Prozent (%)' } } }
+            }
         });
     }
 
     window.onload = function() {
-        loadGitHubData(); 
+        loadGitHubData(); // Holt die GitHub JSON-Daten und aktualisiert das Dashboard
+        applyColors(); 
         initSparklines(); 
         updateMainChart(); 
         document.getElementById('metricSelect').addEventListener('change', updateMainChart);

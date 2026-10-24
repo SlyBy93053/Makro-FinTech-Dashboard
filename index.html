@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profi Makro-Risiko Dashboard V9.7 (Verified)</title>
+    <title>Profi Makro-Risiko Dashboard V9.8 (Live Count)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -87,7 +87,7 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('overview', event)">1. Aktueller Markt-Überblick</button>
             <button class="tab-btn" onclick="switchTab('charts', event)">2. Historische Trends (Live API)</button>
-            <button class="tab-btn" onclick="switchTab('riskHistory', event)">3. Risiko-Verteilung & Datenverfügbarkeit</button>
+            <button class="tab-btn" onclick="switchTab('riskHistory', event)">3. Makro-Risiko Anhäufung</button>
         </div>
 
         <div id="overview" class="tab-content active">
@@ -464,10 +464,10 @@
             </div>
         </div>
 
-        <!-- TAB 3: RISIKO-VERTEILUNG MIT GRAUEM DATENLÜCKEN-ANTEIL -->
+        <!-- TAB 3: RISIKO-VERTEILUNG MIT ECHTEM LIVE-COUNT -->
         <div id="riskHistory" class="tab-content">
-            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung & Datenverfügbarkeit</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die Balken summieren sich immer auf die 24 Dashboard-Indikatoren. <br><strong>Graue Bereiche</strong> markieren Datenlücken / noch nicht abgeschlossene Berichtszeiträume (z.B. restliche Monate im laufenden Jahr).</p>
+            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 10 Jahre & 12 Monate)</h2>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die historischen Balken zeigen simulierte Krisenmuster.<br><strong>Der letzte Balken rechts (Jahr 2026 & Monat Okt 26) zeigt das exakt berechnete Live-Ergebnis deiner aktuellen 24 Indikatoren!</strong></p>
             
             <div class="risk-container-dual">
                 <div class="risk-box">
@@ -501,6 +501,8 @@
 
 <script>
     let globalGitHubData = {};
+    // NEU: Globale Variable, um die tatsächlichen aktuellen Farben der 24 Kacheln zu speichern
+    window.currentRiskCounts = [0, 0, 0, 0, 0]; // [Dunkelgrün, Grün, Blau, Orange, Rot]
 
     const descriptions = {
         'BIP-Wachstum (Welt)': 'Das weltweite Bruttoinlandsprodukt misst den Gesamtwert aller Güter und Dienstleistungen, die global innerhalb eines Jahres produziert werden.',
@@ -576,6 +578,9 @@
     }
 
     function applyColors() {
+        // Reset Zähler für Live-Status
+        window.currentRiskCounts = [0, 0, 0, 0, 0];
+
         document.querySelectorAll('.value').forEach(el => {
             const current = parseFloat(el.getAttribute('data-current'));
             const avg = parseFloat(el.getAttribute('data-avg'));
@@ -586,32 +591,46 @@
             if (isNaN(current)) return;
 
             let color = '#2c3e50';
+            let catIndex = 2; // Standard: Blau (Neutral)
 
-            // Index-Prüfung: > 20% über 12M-Durchschnitt -> Orange
+            // 1. Index-Prüfung: > 20% über 12M-Durchschnitt -> Orange
             if (isIndex && !isNaN(avg12m)) {
                 let excess = (current - avg12m) / avg12m;
                 if (excess > 0.20) {
                     color = '#e67e22'; 
+                    catIndex = 3; // Orange
+                    window.currentRiskCounts[catIndex]++;
                     el.style.color = color;
                     el.style.fontWeight = 'bold';
                     return;
                 }
             }
 
+            // 2. Normale Makro-Auswertung
             if (!isNaN(avg)) {
                 let diff = (avg === 0) ? current * 100 : ((current - avg) / Math.abs(avg)) * 100;
+                
                 if (Math.abs(diff) <= 0.5) {
-                    color = '#2980b9';
+                    color = '#2980b9'; // Blau
+                    catIndex = 2;
                 } else {
                     if (ideal === 'higher') {
-                        color = diff > 0 ? '#27ae60' : '#c0392b';
+                        if (diff > 5) { color = '#1e8449'; catIndex = 0; } // Dunkelgrün (sehr gut)
+                        else if (diff > 0) { color = '#27ae60'; catIndex = 1; } // Grün (gut)
+                        else { color = '#c0392b'; catIndex = 4; } // Rot (schlecht)
                     } else if (ideal === 'lower') {
-                        color = diff < 0 ? '#27ae60' : '#c0392b';
-                    } else {
-                        color = '#f39c12';
+                        if (diff < -5) { color = '#1e8449'; catIndex = 0; }
+                        else if (diff < 0) { color = '#27ae60'; catIndex = 1; }
+                        else { color = '#c0392b'; catIndex = 4; }
+                    } else { // ideal: stable
+                        color = '#f39c12'; // Gelb/Orange
+                        catIndex = 3;
                     }
                 }
             }
+            
+            // Hochzählen für das echte Live-Chart
+            window.currentRiskCounts[catIndex]++;
             el.style.color = color;
             el.style.fontWeight = 'bold';
         });
@@ -695,7 +714,14 @@
     let riskMonthsChartInstance = null;
 
     function renderRiskHistoryCharts() {
-        // Jedes Jahr wird auf exakt 24 Indikatoren normiert. Nicht verfügbare / offene Anteile = Grau (#95a5a6)
+        // Die ersten 9 Jahre (2017-2025) sind historische Muster.
+        // Das letzte Jahr (2026) wird DYNAMISCH durch die Live-Zählung (currentRiskCounts) deiner Kacheln ersetzt!
+        let dG_years = [3, 2, 3, 2, 1, 1, 1, 2, 2, window.currentRiskCounts[0]];
+        let g_years =  [5, 4, 5, 4, 3, 2, 3, 4, 4, window.currentRiskCounts[1]];
+        let b_years =  [7, 6, 6, 6, 5, 4, 4, 5, 5, window.currentRiskCounts[2]];
+        let o_years =  [6, 7, 6, 6, 8, 9, 8, 7, 7, window.currentRiskCounts[3]];
+        let r_years =  [3, 5, 4, 6, 7, 8, 8, 6, 6, window.currentRiskCounts[4]];
+
         const ctxYears = document.getElementById('riskYearsChart').getContext('2d');
         if (riskYearsChartInstance) riskYearsChartInstance.destroy();
 
@@ -705,23 +731,30 @@
             data: {
                 labels: years,
                 datasets: [
-                    { label: 'Dunkelgrün', data: [3, 2, 3, 2, 1, 1, 1, 2, 2, 1], backgroundColor: '#1e8449' },
-                    { label: 'Grün', data: [5, 4, 5, 4, 3, 2, 3, 4, 4, 2], backgroundColor: '#2ecc71' },
-                    { label: 'Blau', data: [7, 6, 6, 6, 5, 4, 4, 5, 5, 3], backgroundColor: '#2980b9' },
-                    { label: 'Orange', data: [6, 7, 6, 6, 8, 9, 8, 7, 7, 4], backgroundColor: '#e67e22' },
-                    { label: 'Rot', data: [3, 5, 4, 6, 7, 8, 8, 6, 6, 4], backgroundColor: '#e74c3c' },
-                    { label: 'Datenlücke / Offen', data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 10], backgroundColor: '#95a5a6' } // 2026 = 14 Ist-Werte + 10 Offen = 24
+                    { label: 'Dunkelgrün', data: dG_years, backgroundColor: '#1e8449' },
+                    { label: 'Grün', data: g_years, backgroundColor: '#2ecc71' },
+                    { label: 'Blau', data: b_years, backgroundColor: '#2980b9' },
+                    { label: 'Orange', data: o_years, backgroundColor: '#e67e22' },
+                    { label: 'Rot', data: r_years, backgroundColor: '#e74c3c' }
                 ]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 scales: {
-                    x: { stacked: true, title: { display: true, text: 'Jahr', font: { weight: 'bold' } } },
-                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren', font: { weight: 'bold' } }, max: 24 }
+                    x: { stacked: true, title: { display: true, text: 'Jahr (Rechts: LIVE Daten 2026)', font: { weight: 'bold' } } },
+                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren (24)', font: { weight: 'bold' } }, max: 24 }
                 },
                 plugins: { legend: { display: true, position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'rectRounded' } }, tooltip: { mode: 'index', intersect: false } }
             }
         });
+
+        // Die ersten 11 Monate sind historische Muster.
+        // Der letzte Monat (Okt 26) wird ebenfalls DYNAMISCH durch die aktuelle Kachel-Live-Zählung ersetzt!
+        let dG_months = [2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, window.currentRiskCounts[0]];
+        let g_months =  [4, 4, 3, 4, 3, 3, 3, 4, 3, 4, 3, window.currentRiskCounts[1]];
+        let b_months =  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, window.currentRiskCounts[2]];
+        let o_months =  [7, 7, 8, 7, 8, 7, 7, 8, 7, 7, 7, window.currentRiskCounts[3]];
+        let r_months =  [6, 6, 6, 7, 6, 7, 7, 6, 7, 6, 7, window.currentRiskCounts[4]];
 
         const ctxMonths = document.getElementById('riskMonthsChart').getContext('2d');
         if (riskMonthsChartInstance) riskMonthsChartInstance.destroy();
@@ -732,19 +765,18 @@
             data: {
                 labels: months,
                 datasets: [
-                    { label: 'Dunkelgrün', data: [2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2], backgroundColor: '#1e8449' },
-                    { label: 'Grün', data: [4, 4, 3, 4, 3, 3, 3, 4, 3, 4, 3, 4], backgroundColor: '#2ecc71' },
-                    { label: 'Blau', data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], backgroundColor: '#2980b9' },
-                    { label: 'Orange', data: [7, 7, 8, 7, 8, 7, 7, 8, 7, 7, 7, 7], backgroundColor: '#e67e22' },
-                    { label: 'Rot', data: [6, 6, 6, 7, 6, 7, 7, 6, 7, 6, 7, 6], backgroundColor: '#e74c3c' },
-                    { label: 'Datenlücke / Offen', data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], backgroundColor: '#95a5a6' } // Monate alle voll mit 24
+                    { label: 'Dunkelgrün', data: dG_months, backgroundColor: '#1e8449' },
+                    { label: 'Grün', data: g_months, backgroundColor: '#2ecc71' },
+                    { label: 'Blau', data: b_months, backgroundColor: '#2980b9' },
+                    { label: 'Orange', data: o_months, backgroundColor: '#e67e22' },
+                    { label: 'Rot', data: r_months, backgroundColor: '#e74c3c' }
                 ]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 scales: {
-                    x: { stacked: true, title: { display: true, text: 'Monat', font: { weight: 'bold' } } },
-                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren', font: { weight: 'bold' } }, max: 24 }
+                    x: { stacked: true, title: { display: true, text: 'Monat (Rechts: LIVE Daten Okt 26)', font: { weight: 'bold' } } },
+                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren (24)', font: { weight: 'bold' } }, max: 24 }
                 },
                 plugins: { legend: { display: true, position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'rectRounded' } }, tooltip: { mode: 'index', intersect: false } }
             }

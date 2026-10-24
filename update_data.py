@@ -1,6 +1,7 @@
 import json
 import requests
 import yfinance as yf
+import pandas as pd
 from datetime import datetime
 
 def fetch_data():
@@ -9,12 +10,20 @@ def fetch_data():
         "status": "live"
     }
     
-    # 1. Shiller-KGV
+    # 1. Shiller-KGV (Live-Abruf über multpl.com)
     try:
-        req = requests.get('https://www.econdb.com/api/series/SHILLER_CAPE/?format=json', timeout=10)
-        data['shiller_kgv'] = round(req.json()['data']['values'][-1], 1)
-    except:
-        data['shiller_kgv'] = 40.5
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        req = requests.get('https://www.multpl.com/shiller-pe/table/by-month', headers=headers, timeout=10)
+        # Liest alle HTML-Tabellen der Seite ein
+        df = pd.read_html(req.text)[0]
+        # Greift auf die erste Zeile (aktuellster Monat) und zweite Spalte (Wert) zu
+        cape_str = str(df.iloc[0, 1]) 
+        # Entfernt Text wie "estimate" und wandelt in eine Zahl um
+        val = float(cape_str.replace('estimate', '').strip())
+        data['shiller_kgv'] = round(val, 1)
+    except Exception as e:
+        print(f"Fehler beim Laden des Shiller-KGV: {e}")
+        data['shiller_kgv'] = 37.5 # Realistischerer Fallback
 
     # 2. Yahoo Finance Daten einzeln abfragen (mit Fehlerbehandlung)
     tickers = {
@@ -25,8 +34,8 @@ def fetch_data():
         "stoxx": "^STOXX50E",
         "nikkei": "^N225",
         "hangseng": "^HSI",
-        "msci": "URTH",
-        "ftse": "VT",
+        "msci": "URTH",  # iShares MSCI World ETF
+        "ftse": "VT",    # Vanguard Total World Stock ETF
         "vix": "^VIX",
         "copper": "HG=F",
         "eurusd": "EURUSD=X"
@@ -35,9 +44,9 @@ def fetch_data():
     for key, ticker in tickers.items():
         try:
             t = yf.Ticker(ticker)
-            df = t.history(period="5d")
-            if not df.empty:
-                val = df['Close'].iloc[-1]
+            df_yf = t.history(period="5d")
+            if not df_yf.empty:
+                val = df_yf['Close'].iloc[-1]
                 data[key] = round(float(val), 2) if key in ["copper", "eurusd", "vix"] else round(float(val), 0)
         except Exception as e:
             print(f"Konnte {ticker} nicht laden: {e}")

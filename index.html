@@ -501,7 +501,7 @@
 
 <script>
     let globalGitHubData = {};
-    window.currentRiskCounts = [0, 0, 0, 0, 0]; // [Dunkelgrün, Grün, Blau, Orange, Rot]
+    window.currentRiskCounts = [0, 0, 0, 0, 0];
 
     const descriptions = {
         'BIP-Wachstum (Welt)': 'Das weltweite Bruttoinlandsprodukt misst den Gesamtwert aller Güter und Dienstleistungen, die global innerhalb eines Jahres produziert werden.',
@@ -589,7 +589,7 @@
             if (isNaN(current)) return;
 
             let color = '#2c3e50';
-            let catIndex = 2; // Standard: Blau (Neutral)
+            let catIndex = 2;
 
             if (isIndex && !isNaN(avg12m)) {
                 let excess = (current - avg12m) / avg12m;
@@ -653,21 +653,30 @@
     function openDetail(title, currentValue, avgValue) {
         document.getElementById('mainView').style.display = 'none';
         document.getElementById('detailView').style.display = 'block';
-        document.getElementById('detailTitle').innerText = `${title} - Historischer Verlauf (Letzte 15 Jahre)`;
-        document.getElementById('detailDescription').innerText = descriptions[title] || 'Detaillierte historische Makro-Analyse über 15 Jahre.';
+        document.getElementById('detailTitle').innerText = `${title} - Historischer Verlauf`;
+        document.getElementById('detailDescription').innerText = descriptions[title] || 'Detaillierte historische Makro-Analyse.';
 
-        const totalWeeks = 780;
-        let dataCurve = [], labels = [], current = avgValue;
-        for (let i = 0; i < totalWeeks; i++) {
-            let year = 2011 + Math.floor(i / 52), week = (i % 52) + 1;
-            labels.push(`${year} (KW ${week})`);
-            let remainingSteps = totalWeeks - i;
-            let drift = (currentValue - current) / remainingSteps;
-            let volatility = Math.abs(avgValue) * 0.05 + 0.1;
-            current += drift + (Math.random() - 0.5) * volatility;
-            dataCurve.push(parseFloat(current.toFixed(2)));
+        let labels = [], dataCurve = [];
+
+        // ECHTE HISTORIE FÜR SHILLER-KGV AUS DER JSON NUTZEN
+        if (title === 'Shiller-KGV (CAPE)' && globalGitHubData.shiller_kgv_history && globalGitHubData.shiller_kgv_history.length > 0) {
+            labels = globalGitHubData.shiller_kgv_history.map(item => item.date);
+            dataCurve = globalGitHubData.shiller_kgv_history.map(item => item.value);
+        } else {
+            // Fallback Simulation für andere Indikatoren
+            const totalWeeks = 780;
+            let current = avgValue;
+            for (let i = 0; i < totalWeeks; i++) {
+                let year = 2011 + Math.floor(i / 52), week = (i % 52) + 1;
+                labels.push(`${year} (KW ${week})`);
+                let remainingSteps = totalWeeks - i;
+                let drift = (currentValue - current) / remainingSteps;
+                let volatility = Math.abs(avgValue) * 0.05 + 0.1;
+                current += drift + (Math.random() - 0.5) * volatility;
+                dataCurve.push(parseFloat(current.toFixed(2)));
+            }
+            dataCurve[totalWeeks - 1] = currentValue;
         }
-        dataCurve[totalWeeks - 1] = currentValue;
 
         function calculateSMA(data, windowSize) {
             let sma = [];
@@ -690,15 +699,15 @@
             data: {
                 labels: labels,
                 datasets: [
-                    { label: title + ' (Verlauf)', data: dataCurve, borderColor: '#2c3e50', borderWidth: 1.5, tension: 0.1, pointRadius: 0, fill: false },
-                    { label: '100-Wochen-Linie (SMA 100)', data: calculateSMA(dataCurve, 100), borderColor: '#f39c12', borderWidth: 2, tension: 0.3, pointRadius: 0 },
-                    { label: '200-Wochen-Linie (SMA 200)', data: calculateSMA(dataCurve, 200), borderColor: '#e74c3c', borderWidth: 2, tension: 0.3, pointRadius: 0 }
+                    { label: title + ' (Verlauf)', data: dataCurve, borderColor: '#2c3e50', borderWidth: 2, tension: 0.1, pointRadius: 2, fill: false },
+                    { label: '100-Periode-Linie (SMA)', data: calculateSMA(dataCurve, 10), borderColor: '#f39c12', borderWidth: 2, tension: 0.3, pointRadius: 0 },
+                    { label: '200-Periode-Linie (SMA)', data: calculateSMA(dataCurve, 20), borderColor: '#e74c3c', borderWidth: 2, tension: 0.3, pointRadius: 0 }
                 ]
             },
             options: {
                 responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
                 scales: {
-                    x: { title: { display: true, text: 'Zeitverlauf (2011 - 2026)', font: { size: 14, weight: 'bold' } }, ticks: { maxTicksLimit: 15, callback: function(val) { return this.getLabelForValue(val).split(" ")[0]; } } },
+                    x: { title: { display: true, text: 'Zeitverlauf', font: { size: 14, weight: 'bold' } } },
                     y: { title: { display: true, text: 'Wert', font: { weight: 'bold' } } }
                 }
             }
@@ -798,11 +807,8 @@
         createSparkline('spark-glb-inf', [3.8, 3.7, 3.6, 3.5, 3.6, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5], cUp);
         createSparkline('spark-glb-vix', [15, 18, 16, 14, 13, 15, 22, 18, 17, 16.5, 16.5, 16.5], cNeut);
         createSparkline('spark-glb-cop', [4.1, 4.2, 4.5, 4.4, 4.3, 4.2, 4.1, 4.2, 4.3, 4.3, 4.3, 4.3], cUp);
-        
-        // Angepasste ETF-Sparklines für MSCI und FTSE
         createSparkline('idx-glb-msci', [120, 125, 130, 128, 132, 135, 130, 135, 138, 142, 145, 145], cUp);
         createSparkline('idx-glb-ftse', [100, 102, 105, 103, 108, 110, 105, 112, 115, 118, 120, 120], cUp);
-        
         createSparkline('spark-ger-bond', [2.8, 2.7, 2.6, 2.7, 2.5, 2.4, 2.3, 2.4, 2.5, 2.6, 2.5, 2.45], cUp);
         createSparkline('spark-ger-unemp', [5.9, 6.0, 6.1, 6.1, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0], cDown);
         createSparkline('spark-ger-prop', [-5.0, -4.5, -4.0, -3.8, -3.5, -3.0, -2.8, -2.5, -2.6, -2.5, -2.4, -2.5], cNeut);

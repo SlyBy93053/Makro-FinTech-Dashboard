@@ -10,20 +10,45 @@ def fetch_data():
         "status": "live"
     }
     
-    # 1. Shiller-KGV (Live-Abruf über multpl.com)
+    # 1. Shiller-KGV (Aktueller Wert + Echte Historie für Mai & Dezember)
     try:
         headers = {'User-Agent': 'Mozilla/5.0'}
         req = requests.get('https://www.multpl.com/shiller-pe/table/by-month', headers=headers, timeout=10)
-        # Liest alle HTML-Tabellen der Seite ein
         df = pd.read_html(req.text)[0]
-        # Greift auf die erste Zeile (aktuellster Monat) und zweite Spalte (Wert) zu
-        cape_str = str(df.iloc[0, 1]) 
-        # Entfernt Text wie "estimate" und wandelt in eine Zahl um
-        val = float(cape_str.replace('estimate', '').strip())
-        data['shiller_kgv'] = round(val, 1)
+        
+        # Aktueller Wert (erste Zeile)
+        current_val = float(str(df.iloc[0, 1]).replace('estimate', '').strip())
+        data['shiller_kgv'] = round(current_val, 1)
+
+        # Historie für Mai & Dezember ab 2011 extrahieren
+        history = []
+        for index, row in df.iterrows():
+            try:
+                date_str = str(row[0])
+                val_str = str(row[1]).replace('estimate', '').strip()
+                val = float(val_str)
+                
+                # Datum bereinigen und parsen (z.B. "May 15, 2025")
+                cleaned_date = date_str.replace('st', '').replace('nd', '').replace('rd', '').replace('th', '')
+                dt = datetime.strptime(cleaned_date, '%b %d, %Y')
+                
+                # Nur Mai (5) und Dezember (12) ab dem Jahr 2011 behalten
+                if dt.month in [5, 12] and dt.year >= 2011:
+                    history.append({
+                        "date": dt.strftime("%m.%Y"),
+                        "value": val
+                    })
+            except Exception:
+                continue
+        
+        # Chronologisch sortieren (von alt nach neu)
+        history = sorted(history, key=lambda x: datetime.strptime(x["date"], "%m.%Y"))
+        data['shiller_kgv_history'] = history
+
     except Exception as e:
         print(f"Fehler beim Laden des Shiller-KGV: {e}")
-        data['shiller_kgv'] = 37.5 # Realistischerer Fallback
+        data['shiller_kgv'] = 40.4
+        data['shiller_kgv_history'] = []
 
     # 2. Yahoo Finance Daten einzeln abfragen (mit Fehlerbehandlung)
     tickers = {

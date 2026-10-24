@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profi Makro-Risiko Dashboard V8.9.1 (GitHub Live)</title>
+    <title>Profi Makro-Risiko Dashboard V8.9.2 (GitHub Live)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -96,7 +96,7 @@
             <div class="region-section">
                 <h2>🌍 Global (Kapitalströme & Risiko)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(event, 'BIP-Wachstum (Welt)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>BIP-Wachstum (Welt)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -108,7 +108,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-gdp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Globale Inflation')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Globale Inflation</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -120,7 +120,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-inf"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'VIX (Volatilität S&P)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>VIX (Volatilität S&P)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -132,7 +132,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-vix"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Kupferpreis')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Kupferpreis</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -144,8 +144,8 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-cop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'MSCI World Index')">
-                        <h3>MSCI World</h3>
+                    <div class="card" onclick="openDetail(this)">
+                        <h3>MSCI World Index</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div id="val-msci" class="value" data-current="3600" data-avg="2100" data-ideal="higher">3.600</div>
@@ -156,7 +156,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-glb-msci"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'FTSE All-World')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>FTSE All-World</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -175,8 +175,8 @@
             <div class="region-section">
                 <h2>🇩🇪 Deutschland (Europas Wirtschaftsmotor)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(event, '10J Bundesanleihe')">
-                        <h3>10J Bundesanleihe (Zins)</h3>
+                    <div class="card" onclick="openDetail(this)">
+                        <h3>10J Bundesanleihe</h3>
                         <div class="card-content">
                             <div class="card-info">
                                 <div class="value" data-current="2.45" data-avg="1.20" data-ideal="lower">2,45 %</div>
@@ -187,7 +187,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-bond"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Arbeitslosenquote (DE)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Arbeitslosenquote (DE)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -199,7 +199,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-unemp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Immobilienpreise (DE)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Immobilienpreise (YoY)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -211,7 +211,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-prop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Staatsschulden (DE)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Staatsschulden (% BIP)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -223,7 +223,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ger-debt"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'DAX 40')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>DAX 40</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -235,7 +235,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-ger-dax"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'MDAX')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>MDAX</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -254,7 +254,7 @@
             <div class="region-section">
                 <h2>🇺🇸 USA (Bewertung & Tech)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(event, 'FED-Leitzins')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>FED-Leitzins</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -266,7 +266,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-fed"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Shiller-KGV (CAPE)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Shiller-KGV (CAPE)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -278,7 +278,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-cape"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Arbeitslosenquote (USA)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Arbeitslosenquote</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -290,7 +290,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-unemp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, '10J US-Staatsanleihe')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>10J US-Staatsanleihe</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -302,7 +302,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-usa-bond"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'S&P 500')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>S&P 500</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -314,7 +314,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-usa-sp500"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Nasdaq 100')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Nasdaq 100</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -333,7 +333,7 @@
             <div class="region-section">
                 <h2>🇪🇺 Europa (Industrie & EZB)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(event, 'EZB-Leitzins')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>EZB-Leitzins</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -345,7 +345,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-ezb"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Einkaufsmanager (PMI) Europa')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Einkaufsmanager (PMI)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -357,7 +357,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-pmi"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'EUR/USD Wechselkurs')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>EUR/USD Wechselkurs</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -369,7 +369,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-usd"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Staatsschulden (% BIP) Europa')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Staatsschulden (% BIP)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -381,7 +381,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eur-debt"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Euro Stoxx 50')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Euro Stoxx 50</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -400,7 +400,7 @@
             <div class="region-section">
                 <h2>🌏 Asien (Wachstum & Diversifikation)</h2>
                 <div class="grid">
-                    <div class="card" onclick="openDetail(event, 'BoJ-Leitzins (Japan)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>BoJ-Leitzins (Japan)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -412,7 +412,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-boj"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Geldmenge M2 (China)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Geldmenge M2 (China)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -424,7 +424,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-m2"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'BIP-Wachstum (Indien)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>BIP-Wachstum (Indien)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -436,7 +436,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-gdp"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Immobilienpreise (China)')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Immobilienpreise (China)</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -448,7 +448,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-asi-prop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Nikkei 225')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Nikkei 225</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -460,7 +460,7 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-asi-nikkei"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail(event, 'Hang Seng')">
+                    <div class="card" onclick="openDetail(this)">
                         <h3>Hang Seng</h3>
                         <div class="card-content">
                             <div class="card-info">
@@ -493,7 +493,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: RISIKO-VERTEILUNG (Letzte 24 Monate im Monatsraster) -->
+        <!-- TAB 3: RISIKO-VERTEILUNG -->
         <div id="riskHistory" class="tab-content">
             <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 24 Monate - Monatsbasis)</h2>
             <p style="text-align: center; color: #7f8c8d; font-size: 14px;">Zeigt die monatliche Verteilung der Indikatoren in den jeweiligen Ampel-Zuständen.</p>
@@ -640,8 +640,9 @@
     }
 
     let detailChartInstance = null;
-    function openDetail(event, title) {
-        const cardElement = event.currentTarget;
+    function openDetail(cardElement) {
+        // Holt den echten Text der Überschrift aus der angeklickten Karte
+        const title = cardElement.querySelector('h3').innerText;
         const valEl = cardElement.querySelector('.value');
         const currentValue = parseFloat(valEl.getAttribute('data-current')) || 100;
         const avgValue = parseFloat(valEl.getAttribute('data-avg')) || (currentValue * 0.8);
@@ -688,14 +689,12 @@
         const ctx = document.getElementById('riskHistoryChart').getContext('2d');
         if (riskHistoryChartInstance) riskHistoryChartInstance.destroy();
 
-        // Generiere die letzten 24 Monate als Labels (z.B. Nov 2024 bis Okt 2026)
         const months = [
             "Nov 24", "Dez 24", "Jan 25", "Feb 25", "Mär 25", "Apr 25", "Mai 25", "Jun 25", 
             "Jul 25", "Aug 25", "Sep 25", "Okt 25", "Nov 25", "Dez 25", "Jan 26", "Feb 26", 
             "Mär 26", "Apr 26", "Mai 26", "Jun 26", "Jul 26", "Aug 26", "Sep 26", "Okt 26"
         ];
 
-        // Realistische monatliche Schwankungen der 24 Indikatoren aufgeteilt nach Ampeln
         const dDarkGreen = [3,3,4,4,3,3,4,4,5,4,4,4,3,3,4,4,5,4,3,4,4,5,4,4];
         const dGreen     = [5,5,4,4,5,5,4,4,3,4,4,4,5,5,4,4,3,4,5,4,4,3,4,4];
         const dBlue      = [7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7];

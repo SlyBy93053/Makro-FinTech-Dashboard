@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profi Makro-Risiko Dashboard V9.2 (GitHub Live)</title>
+    <title>Profi Makro-Risiko Dashboard V9.4 (GitHub Live)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -62,6 +62,11 @@
         .controls { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
         select { padding: 10px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc; }
         .chart-container-large { position: relative; height: 55vh; width: 100%; }
+        
+        /* Flexbox für zwei Diagramme nebeneinander im Risiko-Reiter */
+        .risk-container-dual { display: flex; gap: 20px; flex-wrap: wrap; }
+        .risk-box { flex: 1; min-width: 450px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
+
         .loading { text-align: center; font-weight: bold; color: #e74c3c; margin-bottom: 10px; display: none; }
 
         #detailView { display: none; animation: fadeIn 0.3s ease-in-out; }
@@ -83,7 +88,7 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('overview', event)">1. Aktueller Markt-Überblick</button>
             <button class="tab-btn" onclick="switchTab('charts', event)">2. Historische Trends (Live API)</button>
-            <button class="tab-btn" onclick="switchTab('riskHistory', event)">3. Risiko-Verteilung (Letzte 12 Monate)</button>
+            <button class="tab-btn" onclick="switchTab('riskHistory', event)">3. Risiko-Verteilung (10 Jahre & 12 Monate)</button>
         </div>
 
         <div id="overview" class="tab-content active">
@@ -140,7 +145,7 @@
                         <h3>MSCI World</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-msci" class="value" data-current="3600" data-avg="2100" data-ideal="higher" data-is-index="true" data-12m-avg="3000">3.600</div>
+                                <div id="val-msci" class="value" data-current="3600" data-avg="2100" data-ideal="higher" data-is-index="true" data-12m-avg="2900">3.600</div>
                                 <div class="avg"><strong>15J-Ø: 2.100</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -151,7 +156,7 @@
                         <h3>FTSE All-World</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-ftse" class="value" data-current="520" data-avg="310" data-ideal="higher" data-is-index="true" data-12m-avg="430">520</div>
+                                <div id="val-ftse" class="value" data-current="520" data-avg="310" data-ideal="higher" data-is-index="true" data-12m-avg="420">520</div>
                                 <div class="avg"><strong>15J-Ø: 310</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -286,7 +291,7 @@
                         <h3>S&P 500</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-sp500" class="value" data-current="5800" data-avg="3200" data-ideal="higher" data-is-index="true" data-12m-avg="4700">5.800</div>
+                                <div id="val-sp500" class="value" data-current="5800" data-avg="3200" data-ideal="higher" data-is-index="true" data-12m-avg="4600">5.800</div>
                                 <div class="avg"><strong>15J-Ø: 3.200</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -297,7 +302,7 @@
                         <h3>Nasdaq 100</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-nasdaq" class="value" data-current="20000" data-avg="9500" data-ideal="higher" data-is-index="true" data-12m-avg="16000">20.000</div>
+                                <div id="val-nasdaq" class="value" data-current="20000" data-avg="9500" data-ideal="higher" data-is-index="true" data-12m-avg="15500">20.000</div>
                                 <div class="avg"><strong>15J-Ø: 9.500</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -359,7 +364,7 @@
                         <h3>Euro Stoxx 50</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-stoxx" class="value" data-current="5000" data-avg="3400" data-ideal="higher" data-is-index="true" data-12m-avg="4100">5.000</div>
+                                <div id="val-stoxx" class="value" data-current="5000" data-avg="3400" data-ideal="higher" data-is-index="true" data-12m-avg="4000">5.000</div>
                                 <div class="avg"><strong>15J-Ø: 3.400</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -421,7 +426,7 @@
                         <h3>Nikkei 225</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-nikkei" class="value" data-current="38000" data-avg="22000" data-ideal="higher" data-is-index="true" data-12m-avg="31000">38.000</div>
+                                <div id="val-nikkei" class="value" data-current="38000" data-avg="22000" data-ideal="higher" data-is-index="true" data-12m-avg="30000">38.000</div>
                                 <div class="avg"><strong>15J-Ø: 22.000</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -460,12 +465,24 @@
             </div>
         </div>
 
-        <!-- TAB 3: RISIKO-VERTEILUNG LETZTE 12 MONATE -->
+        <!-- TAB 3: RISIKO-VERTEILUNG (10 JAHRE LINKS & 12 MONATE RECHTS) -->
         <div id="riskHistory" class="tab-content">
-            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 12 Monate)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px;">Monatsweise Verteilung der Indikatoren in den Ampel-Zuständen.</p>
-            <div class="chart-container-large" style="height: 60vh;">
-                <canvas id="riskHistoryChart"></canvas>
+            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Historischer Vergleich)</h2>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Vergleich der Ampel-Zustände: Langfristige Jahres-Perspektive (letzte 10 Jahre) vs. kurzfristige Monats-Perspektive (letzte 12 Monate).</p>
+            
+            <div class="risk-container-dual">
+                <div class="risk-box">
+                    <h3 style="text-align: center; color: #34495e;">Jahre (Letzte 10 Jahre)</h3>
+                    <div style="position: relative; height: 45vh;">
+                        <canvas id="riskYearsChart"></canvas>
+                    </div>
+                </div>
+                <div class="risk-box">
+                    <h3 style="text-align: center; color: #34495e;">Monate (Letzte 12 Monate)</h3>
+                    <div style="position: relative; height: 45vh;">
+                        <canvas id="riskMonthsChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -571,11 +588,11 @@
 
             let color = '#2c3e50';
 
-            // NEU: Wenn es ein Index ist und der aktuelle Wert den 12M-Durchschnitt um > 17% übersteigt -> Orange
+            // Index-Prüfung: > 20% über 12M-Durchschnitt -> Orange
             if (isIndex && !isNaN(avg12m)) {
                 let excess = (current - avg12m) / avg12m;
-                if (excess > 0.17) {
-                    color = '#e67e22'; // Orange für über 17% Überschreitung
+                if (excess > 0.20) {
+                    color = '#e67e22'; 
                     el.style.color = color;
                     el.style.fontWeight = 'bold';
                     return;
@@ -610,7 +627,7 @@
         }
         
         if (tabId === 'riskHistory') {
-            renderRiskHistoryChart();
+            renderRiskHistoryCharts();
         }
     }
 
@@ -626,7 +643,6 @@
         document.getElementById('detailTitle').innerText = `${title} - Historischer Verlauf (Letzte 15 Jahre)`;
         document.getElementById('detailDescription').innerText = descriptions[title] || 'Detaillierte historische Makro-Analyse über 15 Jahre.';
 
-        // Generierung des 15-Jahres-Verlaufs (780 Wochen / Datenpunkte von 2011 bis 2026)
         const totalWeeks = 780;
         let dataCurve = [], labels = [], current = avgValue;
         for (let i = 0; i < totalWeeks; i++) {
@@ -676,23 +692,52 @@
         });
     }
 
-    let riskHistoryChartInstance = null;
-    function renderRiskHistoryChart() {
-        const ctx = document.getElementById('riskHistoryChart').getContext('2d');
-        if (riskHistoryChartInstance) riskHistoryChartInstance.destroy();
+    let riskYearsChartInstance = null;
+    let riskMonthsChartInstance = null;
 
-        const months = ['Nov 2025', 'Dez 2025', 'Jan 2026', 'Feb 2026', 'Mär 2026', 'Apr 2026', 'Mai 2026', 'Jun 2026', 'Jul 2026', 'Aug 2026', 'Sep 2026', 'Okt 2026'];
-        
-        riskHistoryChartInstance = new Chart(ctx, {
+    function renderRiskHistoryCharts() {
+        // 1. Linkes Diagramm: Letzte 10 Jahre
+        const ctxYears = document.getElementById('riskYearsChart').getContext('2d');
+        if (riskYearsChartInstance) riskYearsChartInstance.destroy();
+
+        const years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+        riskYearsChartInstance = new Chart(ctxYears, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [
+                    { label: 'Dunkelgrün', data: [5, 2, 4, 6, 2, 1, 2, 3, 3, 4], backgroundColor: '#1e8449' },
+                    { label: 'Grün', data: [5, 5, 6, 5, 5, 3, 4, 5, 5, 5], backgroundColor: '#2ecc71' },
+                    { label: 'Blau', data: [8, 9, 8, 7, 7, 6, 6, 7, 7, 7], backgroundColor: '#2980b9' },
+                    { label: 'Orange', data: [4, 5, 4, 4, 6, 8, 7, 6, 6, 5], backgroundColor: '#e67e22' },
+                    { label: 'Rot', data: [2, 3, 2, 2, 4, 6, 5, 3, 3, 3], backgroundColor: '#e74c3c' }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true, title: { display: true, text: 'Jahr', font: { weight: 'bold' } } },
+                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren', font: { weight: 'bold' } }, max: 24 }
+                },
+                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
+            }
+        });
+
+        // 2. Rechtes Diagramm: Letzte 12 Monate
+        const ctxMonths = document.getElementById('riskMonthsChart').getContext('2d');
+        if (riskMonthsChartInstance) riskMonthsChartInstance.destroy();
+
+        const months = ['Nov 25', 'Dez 25', 'Jan 26', 'Feb 26', 'Mär 26', 'Apr 26', 'Mai 26', 'Jun 26', 'Jul 26', 'Aug 26', 'Sep 26', 'Okt 26'];
+        riskMonthsChartInstance = new Chart(ctxMonths, {
             type: 'bar',
             data: {
                 labels: months,
                 datasets: [
-                    { label: 'Dunkelgrün (Top / Stark im Ideal)', data: [3, 4, 3, 4, 3, 3, 4, 4, 3, 4, 4, 4], backgroundColor: '#1e8449' },
-                    { label: 'Grün (Gut / Im Trend)', data: [5, 5, 5, 5, 5, 6, 5, 5, 5, 5, 5, 5], backgroundColor: '#2ecc71' },
-                    { label: 'Blau (Im Soll / Neutral)', data: [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7], backgroundColor: '#2980b9' },
-                    { label: 'Orange (Erhöhtes Risiko)', data: [6, 5, 6, 5, 6, 5, 5, 5, 6, 5, 5, 5], backgroundColor: '#e67e22' },
-                    { label: 'Rot (Kritisch / Hohes Risiko)', data: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], backgroundColor: '#e74c3c' }
+                    { label: 'Dunkelgrün', data: [3, 4, 3, 4, 3, 3, 4, 4, 3, 4, 4, 4], backgroundColor: '#1e8449' },
+                    { label: 'Grün', data: [5, 5, 5, 5, 5, 6, 5, 5, 5, 5, 5, 5], backgroundColor: '#2ecc71' },
+                    { label: 'Blau', data: [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7], backgroundColor: '#2980b9' },
+                    { label: 'Orange', data: [6, 5, 6, 5, 6, 5, 5, 5, 6, 5, 5, 5], backgroundColor: '#e67e22' },
+                    { label: 'Rot', data: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], backgroundColor: '#e74c3c' }
                 ]
             },
             options: {
@@ -701,10 +746,7 @@
                     x: { stacked: true, title: { display: true, text: 'Monat', font: { weight: 'bold' } } },
                     y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren', font: { weight: 'bold' } }, max: 24 }
                 },
-                plugins: {
-                    title: { display: true, text: 'Monatliche Verteilung der Makro-Risiko-Ampeln (Letzte 12 Monate)', font: { size: 16 } },
-                    tooltip: { mode: 'index', intersect: false }
-                }
+                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
             }
         });
     }
@@ -729,38 +771,29 @@
 
     function initSparklines() {
         const cUp = '#2ecc71', cDown = '#e74c3c', cNeut = '#3498db';
-        // Global
         createSparkline('spark-glb-gdp', [2.8, 2.8, 2.9, 2.9, 2.8, 2.9, 2.9, 2.9, 2.9, 2.9, 2.9, 2.9], cNeut);
         createSparkline('spark-glb-inf', [3.8, 3.7, 3.6, 3.5, 3.6, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5], cUp);
         createSparkline('spark-glb-vix', [15, 18, 16, 14, 13, 15, 22, 18, 17, 16.5, 16.5, 16.5], cNeut);
         createSparkline('spark-glb-cop', [4.1, 4.2, 4.5, 4.4, 4.3, 4.2, 4.1, 4.2, 4.3, 4.3, 4.3, 4.3], cUp);
         createSparkline('idx-glb-msci', [3450, 3500, 3600, 3550, 3580, 3600, 3500, 3550, 3580, 3600, 3600, 3600], cUp);
         createSparkline('idx-glb-ftse', [495, 500, 510, 505, 515, 520, 500, 510, 515, 520, 520, 520], cUp);
-        
-        // Deutschland
         createSparkline('spark-ger-bond', [2.8, 2.7, 2.6, 2.7, 2.5, 2.4, 2.3, 2.4, 2.5, 2.6, 2.5, 2.45], cUp);
         createSparkline('spark-ger-unemp', [5.9, 6.0, 6.1, 6.1, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0], cDown);
         createSparkline('spark-ger-prop', [-5.0, -4.5, -4.0, -3.8, -3.5, -3.0, -2.8, -2.5, -2.6, -2.5, -2.4, -2.5], cNeut);
         createSparkline('spark-ger-debt', [65, 65, 64.8, 64.5, 64.2, 64.0, 63.8, 63.5, 63.6, 63.5, 63.5, 63.5], cUp);
         createSparkline('idx-ger-dax', [18500, 18400, 18800, 18700, 18900, 19000, 18500, 18800, 18900, 19000, 19000, 19000], cUp);
         createSparkline('idx-ger-mdax', [25800, 25400, 25700, 25900, 26100, 26000, 25500, 25800, 25900, 26000, 26000, 26000], cUp);
-
-        // USA
         createSparkline('spark-usa-fed', [5.2, 5.2, 5.0, 5.0, 4.75, 4.5, 3.75, 3.75, 3.75, 3.75, 3.75, 3.75], cUp);
         createSparkline('spark-usa-cape', [40.3, 40.5, 40.2, 40.1, 40.3, 40.4, 40.1, 40.2, 40.3, 40.4, 40.4, 40.4], cDown);
         createSparkline('spark-usa-unemp', [3.8, 3.9, 4.0, 4.1, 4.2, 4.2, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2], cDown);
         createSparkline('spark-usa-bond', [4.5, 4.6, 4.4, 4.3, 4.2, 4.0, 3.9, 4.1, 4.1, 4.15, 4.15, 4.15], cNeut);
         createSparkline('idx-usa-sp500', [5400, 5500, 5600, 5500, 5700, 5800, 5500, 5600, 5700, 5800, 5800, 5800], cUp);
         createSparkline('idx-usa-nasdaq', [18500, 19000, 19500, 19200, 19800, 20000, 19000, 19500, 19800, 20000, 20000, 20000], cUp);
-
-        // Europa
         createSparkline('spark-eur-ezb', [4.0, 3.75, 3.75, 3.5, 3.25, 3.0, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5], cUp);
         createSparkline('spark-eur-pmi', [47.5, 48.0, 48.2, 48.5, 48.0, 47.8, 48.1, 48.3, 48.4, 48.5, 48.5, 48.5], cNeut);
         createSparkline('spark-eur-usd', [1.07, 1.08, 1.09, 1.08, 1.07, 1.06, 1.07, 1.08, 1.09, 1.08, 1.08, 1.08], cNeut);
         createSparkline('spark-eur-debt', [90, 89.8, 89.5, 89.5, 89.5, 89.2, 89.0, 89.0, 89.0, 89.0, 89.0, 89.0], cUp);
         createSparkline('idx-eur-stoxx', [4700, 4800, 4900, 4950, 4900, 5000, 5050, 4950, 5000, 5000, 5000, 5000], cUp);
-
-        // Asien
         createSparkline('spark-asi-boj', [0.0, 0.1, 0.1, 0.25, 0.25, 0.25, 0.25, 0.5, 0.5, 0.5, 0.5, 0.5], cDown);
         createSparkline('spark-asi-m2', [7.8, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5, 8.5, 8.5, 8.5, 8.5, 8.5], cUp);
         createSparkline('spark-asi-gdp', [6.9, 6.9, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8, 6.8], cNeut);

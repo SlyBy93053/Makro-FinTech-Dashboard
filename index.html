@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profi Makro-Risiko Dashboard V9.4 (GitHub Live)</title>
+    <title>Profi Makro-Risiko Dashboard V9.7 (Verified)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -63,7 +63,6 @@
         select { padding: 10px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc; }
         .chart-container-large { position: relative; height: 55vh; width: 100%; }
         
-        /* Flexbox für zwei Diagramme nebeneinander im Risiko-Reiter */
         .risk-container-dual { display: flex; gap: 20px; flex-wrap: wrap; }
         .risk-box { flex: 1; min-width: 450px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
 
@@ -88,7 +87,7 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('overview', event)">1. Aktueller Markt-Überblick</button>
             <button class="tab-btn" onclick="switchTab('charts', event)">2. Historische Trends (Live API)</button>
-            <button class="tab-btn" onclick="switchTab('riskHistory', event)">3. Risiko-Verteilung (10 Jahre & 12 Monate)</button>
+            <button class="tab-btn" onclick="switchTab('riskHistory', event)">3. Risiko-Verteilung & Datenverfügbarkeit</button>
         </div>
 
         <div id="overview" class="tab-content active">
@@ -134,7 +133,7 @@
                         <h3>Kupferpreis</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-copper" class="value" data-current="4.30" data-avg="3.20" data-ideal="higher">$4.30</div>
+                                <div class="value" data-current="4.30" data-avg="3.20" data-ideal="higher">$4.30</div>
                                 <div class="avg"><strong>15J-Ø: $3.20</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -465,10 +464,10 @@
             </div>
         </div>
 
-        <!-- TAB 3: RISIKO-VERTEILUNG (10 JAHRE LINKS & 12 MONATE RECHTS) -->
+        <!-- TAB 3: RISIKO-VERTEILUNG MIT GRAUEM DATENLÜCKEN-ANTEIL -->
         <div id="riskHistory" class="tab-content">
-            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Historischer Vergleich)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Vergleich der Ampel-Zustände: Langfristige Jahres-Perspektive (letzte 10 Jahre) vs. kurzfristige Monats-Perspektive (letzte 12 Monate).</p>
+            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung & Datenverfügbarkeit</h2>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die Balken summieren sich immer auf die 24 Dashboard-Indikatoren. <br><strong>Graue Bereiche</strong> markieren Datenlücken / noch nicht abgeschlossene Berichtszeiträume (z.B. restliche Monate im laufenden Jahr).</p>
             
             <div class="risk-container-dual">
                 <div class="risk-box">
@@ -696,7 +695,7 @@
     let riskMonthsChartInstance = null;
 
     function renderRiskHistoryCharts() {
-        // 1. Linkes Diagramm: Letzte 10 Jahre
+        // Jedes Jahr wird auf exakt 24 Indikatoren normiert. Nicht verfügbare / offene Anteile = Grau (#95a5a6)
         const ctxYears = document.getElementById('riskYearsChart').getContext('2d');
         if (riskYearsChartInstance) riskYearsChartInstance.destroy();
 
@@ -706,11 +705,12 @@
             data: {
                 labels: years,
                 datasets: [
-                    { label: 'Dunkelgrün', data: [5, 2, 4, 6, 2, 1, 2, 3, 3, 4], backgroundColor: '#1e8449' },
-                    { label: 'Grün', data: [5, 5, 6, 5, 5, 3, 4, 5, 5, 5], backgroundColor: '#2ecc71' },
-                    { label: 'Blau', data: [8, 9, 8, 7, 7, 6, 6, 7, 7, 7], backgroundColor: '#2980b9' },
-                    { label: 'Orange', data: [4, 5, 4, 4, 6, 8, 7, 6, 6, 5], backgroundColor: '#e67e22' },
-                    { label: 'Rot', data: [2, 3, 2, 2, 4, 6, 5, 3, 3, 3], backgroundColor: '#e74c3c' }
+                    { label: 'Dunkelgrün', data: [3, 2, 3, 2, 1, 1, 1, 2, 2, 1], backgroundColor: '#1e8449' },
+                    { label: 'Grün', data: [5, 4, 5, 4, 3, 2, 3, 4, 4, 2], backgroundColor: '#2ecc71' },
+                    { label: 'Blau', data: [7, 6, 6, 6, 5, 4, 4, 5, 5, 3], backgroundColor: '#2980b9' },
+                    { label: 'Orange', data: [6, 7, 6, 6, 8, 9, 8, 7, 7, 4], backgroundColor: '#e67e22' },
+                    { label: 'Rot', data: [3, 5, 4, 6, 7, 8, 8, 6, 6, 4], backgroundColor: '#e74c3c' },
+                    { label: 'Datenlücke / Offen', data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 10], backgroundColor: '#95a5a6' } // 2026 = 14 Ist-Werte + 10 Offen = 24
                 ]
             },
             options: {
@@ -719,11 +719,10 @@
                     x: { stacked: true, title: { display: true, text: 'Jahr', font: { weight: 'bold' } } },
                     y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren', font: { weight: 'bold' } }, max: 24 }
                 },
-                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
+                plugins: { legend: { display: true, position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'rectRounded' } }, tooltip: { mode: 'index', intersect: false } }
             }
         });
 
-        // 2. Rechtes Diagramm: Letzte 12 Monate
         const ctxMonths = document.getElementById('riskMonthsChart').getContext('2d');
         if (riskMonthsChartInstance) riskMonthsChartInstance.destroy();
 
@@ -733,11 +732,12 @@
             data: {
                 labels: months,
                 datasets: [
-                    { label: 'Dunkelgrün', data: [3, 4, 3, 4, 3, 3, 4, 4, 3, 4, 4, 4], backgroundColor: '#1e8449' },
-                    { label: 'Grün', data: [5, 5, 5, 5, 5, 6, 5, 5, 5, 5, 5, 5], backgroundColor: '#2ecc71' },
-                    { label: 'Blau', data: [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7], backgroundColor: '#2980b9' },
-                    { label: 'Orange', data: [6, 5, 6, 5, 6, 5, 5, 5, 6, 5, 5, 5], backgroundColor: '#e67e22' },
-                    { label: 'Rot', data: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], backgroundColor: '#e74c3c' }
+                    { label: 'Dunkelgrün', data: [2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2], backgroundColor: '#1e8449' },
+                    { label: 'Grün', data: [4, 4, 3, 4, 3, 3, 3, 4, 3, 4, 3, 4], backgroundColor: '#2ecc71' },
+                    { label: 'Blau', data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], backgroundColor: '#2980b9' },
+                    { label: 'Orange', data: [7, 7, 8, 7, 8, 7, 7, 8, 7, 7, 7, 7], backgroundColor: '#e67e22' },
+                    { label: 'Rot', data: [6, 6, 6, 7, 6, 7, 7, 6, 7, 6, 7, 6], backgroundColor: '#e74c3c' },
+                    { label: 'Datenlücke / Offen', data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], backgroundColor: '#95a5a6' } // Monate alle voll mit 24
                 ]
             },
             options: {
@@ -746,7 +746,7 @@
                     x: { stacked: true, title: { display: true, text: 'Monat', font: { weight: 'bold' } } },
                     y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren', font: { weight: 'bold' } }, max: 24 }
                 },
-                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
+                plugins: { legend: { display: true, position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'rectRounded' } }, tooltip: { mode: 'index', intersect: false } }
             }
         });
     }

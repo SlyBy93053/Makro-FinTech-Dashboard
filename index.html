@@ -140,23 +140,23 @@
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-glb-cop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail('MSCI World Index', 3600, 2100)">
-                        <h3>MSCI World</h3>
+                    <div class="card" onclick="openDetail('MSCI World Index', 145, 100)">
+                        <h3>MSCI World (ETF)</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-msci" class="value" data-current="3600" data-avg="2100" data-ideal="higher" data-is-index="true" data-12m-avg="2900">3.600</div>
-                                <div class="avg"><strong>15J-Ø: 2.100</strong></div>
+                                <div id="val-msci" class="value" data-current="145" data-avg="100" data-ideal="higher" data-is-index="true" data-12m-avg="135">145</div>
+                                <div class="avg"><strong>15J-Ø: ~100</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-glb-msci"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
-                    <div class="card" onclick="openDetail('FTSE All-World', 520, 310)">
-                        <h3>FTSE All-World</h3>
+                    <div class="card" onclick="openDetail('FTSE All-World', 120, 80)">
+                        <h3>FTSE All-World (ETF)</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div id="val-ftse" class="value" data-current="520" data-avg="310" data-ideal="higher" data-is-index="true" data-12m-avg="420">520</div>
-                                <div class="avg"><strong>15J-Ø: 310</strong></div>
+                                <div id="val-ftse" class="value" data-current="120" data-avg="80" data-ideal="higher" data-is-index="true" data-12m-avg="110">120</div>
+                                <div class="avg"><strong>15J-Ø: ~80</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
                             <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="idx-glb-ftse"></canvas></div><div class="sparkline-label">12 Monate</div></div>
@@ -501,7 +501,6 @@
 
 <script>
     let globalGitHubData = {};
-    // NEU: Globale Variable, um die tatsächlichen aktuellen Farben der 24 Kacheln zu speichern
     window.currentRiskCounts = [0, 0, 0, 0, 0]; // [Dunkelgrün, Grün, Blau, Orange, Rot]
 
     const descriptions = {
@@ -578,7 +577,6 @@
     }
 
     function applyColors() {
-        // Reset Zähler für Live-Status
         window.currentRiskCounts = [0, 0, 0, 0, 0];
 
         document.querySelectorAll('.value').forEach(el => {
@@ -593,12 +591,11 @@
             let color = '#2c3e50';
             let catIndex = 2; // Standard: Blau (Neutral)
 
-            // 1. Index-Prüfung: > 20% über 12M-Durchschnitt -> Orange
             if (isIndex && !isNaN(avg12m)) {
                 let excess = (current - avg12m) / avg12m;
                 if (excess > 0.20) {
                     color = '#e67e22'; 
-                    catIndex = 3; // Orange
+                    catIndex = 3; 
                     window.currentRiskCounts[catIndex]++;
                     el.style.color = color;
                     el.style.fontWeight = 'bold';
@@ -606,30 +603,28 @@
                 }
             }
 
-            // 2. Normale Makro-Auswertung
             if (!isNaN(avg)) {
                 let diff = (avg === 0) ? current * 100 : ((current - avg) / Math.abs(avg)) * 100;
                 
                 if (Math.abs(diff) <= 0.5) {
-                    color = '#2980b9'; // Blau
+                    color = '#2980b9'; 
                     catIndex = 2;
                 } else {
                     if (ideal === 'higher') {
-                        if (diff > 5) { color = '#1e8449'; catIndex = 0; } // Dunkelgrün (sehr gut)
-                        else if (diff > 0) { color = '#27ae60'; catIndex = 1; } // Grün (gut)
-                        else { color = '#c0392b'; catIndex = 4; } // Rot (schlecht)
+                        if (diff > 5) { color = '#1e8449'; catIndex = 0; } 
+                        else if (diff > 0) { color = '#27ae60'; catIndex = 1; } 
+                        else { color = '#c0392b'; catIndex = 4; } 
                     } else if (ideal === 'lower') {
                         if (diff < -5) { color = '#1e8449'; catIndex = 0; }
                         else if (diff < 0) { color = '#27ae60'; catIndex = 1; }
                         else { color = '#c0392b'; catIndex = 4; }
-                    } else { // ideal: stable
-                        color = '#f39c12'; // Gelb/Orange
+                    } else { 
+                        color = '#f39c12'; 
                         catIndex = 3;
                     }
                 }
             }
             
-            // Hochzählen für das echte Live-Chart
             window.currentRiskCounts[catIndex]++;
             el.style.color = color;
             el.style.fontWeight = 'bold';
@@ -714,8 +709,6 @@
     let riskMonthsChartInstance = null;
 
     function renderRiskHistoryCharts() {
-        // Die ersten 9 Jahre (2017-2025) sind historische Muster.
-        // Das letzte Jahr (2026) wird DYNAMISCH durch die Live-Zählung (currentRiskCounts) deiner Kacheln ersetzt!
         let dG_years = [3, 2, 3, 2, 1, 1, 1, 2, 2, window.currentRiskCounts[0]];
         let g_years =  [5, 4, 5, 4, 3, 2, 3, 4, 4, window.currentRiskCounts[1]];
         let b_years =  [7, 6, 6, 6, 5, 4, 4, 5, 5, window.currentRiskCounts[2]];
@@ -748,8 +741,6 @@
             }
         });
 
-        // Die ersten 11 Monate sind historische Muster.
-        // Der letzte Monat (Okt 26) wird ebenfalls DYNAMISCH durch die aktuelle Kachel-Live-Zählung ersetzt!
         let dG_months = [2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, window.currentRiskCounts[0]];
         let g_months =  [4, 4, 3, 4, 3, 3, 3, 4, 3, 4, 3, window.currentRiskCounts[1]];
         let b_months =  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, window.currentRiskCounts[2]];
@@ -807,8 +798,11 @@
         createSparkline('spark-glb-inf', [3.8, 3.7, 3.6, 3.5, 3.6, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5], cUp);
         createSparkline('spark-glb-vix', [15, 18, 16, 14, 13, 15, 22, 18, 17, 16.5, 16.5, 16.5], cNeut);
         createSparkline('spark-glb-cop', [4.1, 4.2, 4.5, 4.4, 4.3, 4.2, 4.1, 4.2, 4.3, 4.3, 4.3, 4.3], cUp);
-        createSparkline('idx-glb-msci', [3450, 3500, 3600, 3550, 3580, 3600, 3500, 3550, 3580, 3600, 3600, 3600], cUp);
-        createSparkline('idx-glb-ftse', [495, 500, 510, 505, 515, 520, 500, 510, 515, 520, 520, 520], cUp);
+        
+        // Angepasste ETF-Sparklines für MSCI und FTSE
+        createSparkline('idx-glb-msci', [120, 125, 130, 128, 132, 135, 130, 135, 138, 142, 145, 145], cUp);
+        createSparkline('idx-glb-ftse', [100, 102, 105, 103, 108, 110, 105, 112, 115, 118, 120, 120], cUp);
+        
         createSparkline('spark-ger-bond', [2.8, 2.7, 2.6, 2.7, 2.5, 2.4, 2.3, 2.4, 2.5, 2.6, 2.5, 2.45], cUp);
         createSparkline('spark-ger-unemp', [5.9, 6.0, 6.1, 6.1, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0], cDown);
         createSparkline('spark-ger-prop', [-5.0, -4.5, -4.0, -3.8, -3.5, -3.0, -2.8, -2.5, -2.6, -2.5, -2.4, -2.5], cNeut);
@@ -887,6 +881,5 @@
         document.getElementById('metricSelect').addEventListener('change', updateMainChart);
     };
 </script>
-
 </body>
 </html>

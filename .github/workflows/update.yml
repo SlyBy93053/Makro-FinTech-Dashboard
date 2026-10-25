@@ -9,17 +9,17 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-   steps:
+    steps:
       - name: Code auschecken
-        uses: actions/checkout@v4   # Hier von v3 auf v4 geändert
+        uses: actions/checkout@v4
 
       - name: Python einrichten
-        uses: actions/setup-python@v5  # Hier von v4 auf v5 geändert
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           
       - name: Pakete installieren
-        run: pip install yfinance requests
+        run: pip install yfinance requests pandas lxml
           
       - name: Skript ausführen
         run: python update_data.py

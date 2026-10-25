@@ -82,7 +82,7 @@
 <div class="container">
     <div id="mainView">
         <h1>Globales Makro-Risiko Dashboard</h1>
-        <div class="subtitle" id="subStatus">Lade Live-Daten von GitHub & APIs...</div>
+        <div class="subtitle" id="subStatus">Lade Live-Daten von data.json...</div>
         
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('overview', event)">1. Aktueller Markt-Überblick</button>
@@ -133,7 +133,7 @@
                         <h3>Kupferpreis</h3>
                         <div class="card-content">
                             <div class="card-info">
-                                <div class="value" data-current="4.30" data-avg="3.20" data-ideal="higher">$4.30</div>
+                                <div id="val-copper" class="value" data-current="4.30" data-avg="3.20" data-ideal="higher">$4.30</div>
                                 <div class="avg"><strong>15J-Ø: $3.20</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
@@ -467,7 +467,7 @@
         <!-- TAB 3: RISIKO-VERTEILUNG MIT ECHTEM LIVE-COUNT -->
         <div id="riskHistory" class="tab-content">
             <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 10 Jahre & 12 Monate)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die historischen Balken zeigen simulierte Krisenmuster.<br><strong>Der letzte Balken rechts (Jahr 2026 & Monat Okt 26) zeigt das exakt berechnete Live-Ergebnis deiner aktuellen 24 Indikatoren!</strong></p>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die historischen Balken zeigen simulierte Krisenmuster.<br><strong>Der letzte Balken rechts zeigt das exakt berechnete Live-Ergebnis deiner aktuellen 24 Indikatoren!</strong></p>
             
             <div class="risk-container-dual">
                 <div class="risk-box">
@@ -542,7 +542,7 @@
             const data = await response.json();
             globalGitHubData = data;
 
-            document.getElementById('subStatus').innerText = `Live-Daten von GitHub (Stand: ${data.last_update || 'Aktuell'})`;
+            document.getElementById('subStatus').innerText = `Live-Daten von data.json (Stand: ${data.last_update || 'Aktuell'})`;
 
             const mapping = {
                 'shiller_kgv': 'shillerValue',
@@ -571,7 +571,7 @@
                 }
             }
         } catch (e) {
-            document.getElementById('subStatus').innerText = "Live-Daten via APIs aktiv";
+            document.getElementById('subStatus').innerText = "Live-Daten via Fallback aktiv";
         }
         applyColors();
     }
@@ -658,24 +658,33 @@
 
         let labels = [], dataCurve = [];
 
-        // ECHTE HISTORIE FÜR SHILLER-KGV AUS DER JSON NUTZEN
-        if (title === 'Shiller-KGV (CAPE)' && globalGitHubData.shiller_kgv_history && globalGitHubData.shiller_kgv_history.length > 0) {
-            labels = globalGitHubData.shiller_kgv_history.map(item => item.date);
-            dataCurve = globalGitHubData.shiller_kgv_history.map(item => item.value);
+        // Zuordnung von Titel zu JSON-Key
+        const titleToKey = {
+            'Shiller-KGV (CAPE)': 'shiller_kgv',
+            'S&P 500': 'sp500',
+            'Nasdaq 100': 'nasdaq',
+            'DAX 40': 'dax',
+            'MDAX': 'mdax',
+            'Euro Stoxx 50': 'stoxx',
+            'Nikkei 225': 'nikkei',
+            'Hang Seng': 'hangseng',
+            'MSCI World Index': 'msci',
+            'FTSE All-World': 'ftse',
+            'VIX (Volatilität S&P)': 'vix',
+            'Kupferpreis': 'copper',
+            'EUR/USD Wechselkurs': 'eurusd'
+        };
+
+        const jsonKey = titleToKey[title];
+        const historyKey = jsonKey ? jsonKey + '_history' : null;
+
+        // ECHTE Historie aus JSON laden (keine Simulationen/Schätzungen mehr!)
+        if (historyKey && globalGitHubData[historyKey] && globalGitHubData[historyKey].length > 0) {
+            labels = globalGitHubData[historyKey].map(item => item.date);
+            dataCurve = globalGitHubData[historyKey].map(item => item.value);
         } else {
-            // Fallback Simulation für andere Indikatoren
-            const totalWeeks = 780;
-            let current = avgValue;
-            for (let i = 0; i < totalWeeks; i++) {
-                let year = 2011 + Math.floor(i / 52), week = (i % 52) + 1;
-                labels.push(`${year} (KW ${week})`);
-                let remainingSteps = totalWeeks - i;
-                let drift = (currentValue - current) / remainingSteps;
-                let volatility = Math.abs(avgValue) * 0.05 + 0.1;
-                current += drift + (Math.random() - 0.5) * volatility;
-                dataCurve.push(parseFloat(current.toFixed(2)));
-            }
-            dataCurve[totalWeeks - 1] = currentValue;
+            labels = ['Aktuell'];
+            dataCurve = [currentValue];
         }
 
         function calculateSMA(data, windowSize) {
@@ -699,15 +708,15 @@
             data: {
                 labels: labels,
                 datasets: [
-                    { label: title + ' (Verlauf)', data: dataCurve, borderColor: '#2c3e50', borderWidth: 2, tension: 0.1, pointRadius: 2, fill: false },
-                    { label: '100-Periode-Linie (SMA)', data: calculateSMA(dataCurve, 10), borderColor: '#f39c12', borderWidth: 2, tension: 0.3, pointRadius: 0 },
-                    { label: '200-Periode-Linie (SMA)', data: calculateSMA(dataCurve, 20), borderColor: '#e74c3c', borderWidth: 2, tension: 0.3, pointRadius: 0 }
+                    { label: title + ' (Realer Verlauf)', data: dataCurve, borderColor: '#2c3e50', borderWidth: 2, tension: 0.1, pointRadius: 1, fill: false },
+                    { label: '50-Tage-Linie (SMA)', data: calculateSMA(dataCurve, 10), borderColor: '#f39c12', borderWidth: 2, tension: 0.3, pointRadius: 0 },
+                    { label: '200-Tage-Linie (SMA)', data: calculateSMA(dataCurve, 30), borderColor: '#e74c3c', borderWidth: 2, tension: 0.3, pointRadius: 0 }
                 ]
             },
             options: {
                 responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
                 scales: {
-                    x: { title: { display: true, text: 'Zeitverlauf', font: { size: 14, weight: 'bold' } } },
+                    x: { title: { display: true, text: 'Datum', font: { size: 14, weight: 'bold' } } },
                     y: { title: { display: true, text: 'Wert', font: { weight: 'bold' } } }
                 }
             }

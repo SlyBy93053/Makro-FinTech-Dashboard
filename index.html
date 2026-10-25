@@ -6,74 +6,53 @@
     <title>Profi Makro-Risiko Dashboard V9.8 (Live Count)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            position: relative;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 1300px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
         h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
         .subtitle { text-align: center; font-size: 14px; color: #7f8c8d; margin-bottom: 25px; }
-        
         .tabs { display: flex; justify-content: center; margin-bottom: 25px; border-bottom: 2px solid #ecf0f1; flex-wrap: wrap; }
         .tab-btn { background: none; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; color: #7f8c8d; cursor: pointer; transition: all 0.3s; }
         .tab-btn:hover { color: #2c3e50; }
         .tab-btn.active { color: #3498db; border-bottom: 3px solid #3498db; margin-bottom: -2px; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
         .region-section { margin-bottom: 40px; }
         .region-section h2 { border-bottom: 2px solid #34495e; padding-bottom: 5px; color: #34495e; margin-bottom: 20px; }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .card {
-            background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column;
-            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-        }
+        .card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); border-color: #3498db; }
         .card h3 { margin: 0 0 10px 0; font-size: 13px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; }
-        
         .card-content { display: flex; justify-content: space-between; align-items: center; }
         .card-info { flex: 1; pointer-events: none; }
-        
         .value { font-size: 24px; margin-bottom: 2px; font-weight: bold; }
         .avg { font-size: 13px; color: #2c3e50; margin-bottom: 8px; }
-        
         .ideal { font-size: 11px; padding: 4px 8px; border-radius: 12px; display: inline-block; font-weight: bold; }
         .ideal-lower { background: #d4edda; color: #155724; }
         .ideal-higher { background: #cce5ff; color: #004085; }
         .ideal-stable { background: #fff3cd; color: #856404; }
-        
         .card-sparkline-container { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
         .card-sparkline { width: 90px; height: 40px; position: relative; }
         .sparkline-label { font-size: 9px; color: #95a5a6; margin-top: 2px; }
-
         .controls { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
         select { padding: 10px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc; }
         .chart-container-large { position: relative; height: 55vh; width: 100%; }
-        
         .risk-container-dual { display: flex; gap: 20px; flex-wrap: wrap; }
         .risk-box { flex: 1; min-width: 450px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
-
         .loading { text-align: center; font-weight: bold; color: #e74c3c; margin-bottom: 10px; display: none; }
-
         #detailView { display: none; animation: fadeIn 0.3s ease-in-out; }
-        .back-btn { background-color: #2c3e50; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; gap: 5px; }
+        
+        /* Button Styles */
+        .back-btn { background-color: #2c3e50; color: white; border: none; padding: 10px 20px; font-size: 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .back-btn:hover { background-color: #1a252f; }
+        .btn-green { background-color: #27ae60; }
+        .btn-green:hover { background-color: #219653; }
+        .btn-blue { background-color: #2980b9; }
+        .btn-blue:hover { background-color: #2471a3; }
+        .btn-red { background-color: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 5px 10px; font-size: 12px; margin-top: 10px; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+        .btn-red:hover { background-color: #e74c3c; color: white; }
+        
         #detailTitle { margin-top: 0; margin-bottom: 5px; color: #2c3e50; }
         #detailDescription { font-size: 14px; color: #7f8c8d; line-height: 1.5; margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-left: 4px solid #3498db; border-radius: 4px; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -82,16 +61,15 @@
 <div class="container">
     <div id="mainView">
         <h1>Globales Makro-Risiko Dashboard</h1>
-        <div class="subtitle" id="subStatus">Lade Live-Daten von data.json...</div>
+        <div class="subtitle" id="subStatus">Lade Live-Daten...</div>
         
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('overview', event)">1. Aktueller Markt-Überblick</button>
-            <button class="tab-btn" onclick="switchTab('charts', event)">2. Historische Trends (Live API)</button>
+            <button class="tab-btn" onclick="switchTab('charts', event)">2. Historische Trends</button>
             <button class="tab-btn" onclick="switchTab('riskHistory', event)">3. Makro-Risiko Anhäufung</button>
         </div>
 
         <div id="overview" class="tab-content active">
-            
             <!-- GLOBAL -->
             <div class="region-section">
                 <h2>🌍 Global (Kapitalströme & Risiko)</h2>
@@ -445,10 +423,9 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- TAB 2: CHARTS (Live API) -->
+        <!-- TAB 2: CHARTS -->
         <div id="charts" class="tab-content">
             <div class="controls">
                 <label for="metricSelect" style="align-self: center; font-weight: bold;">Indikator:</label>
@@ -464,31 +441,43 @@
             </div>
         </div>
 
-        <!-- TAB 3: RISIKO-VERTEILUNG MIT ECHTEM LIVE-COUNT -->
+        <!-- TAB 3: RISIKO-VERTEILUNG -->
         <div id="riskHistory" class="tab-content">
-            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 10 Jahre & 12 Monate)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die historischen Balken zeigen simulierte Krisenmuster.<br><strong>Der letzte Balken rechts zeigt das exakt berechnete Live-Ergebnis deiner aktuellen 24 Indikatoren!</strong></p>
+            <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 10 Jahre - Oktoberwerte)</h2>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die Balken zeigen die Auswertung des Python-Skripts (jeweils der letzte Handelstag im Oktober).<br><strong>Der letzte Balken rechts zeigt das exakt berechnete Live-Ergebnis!</strong></p>
             
             <div class="risk-container-dual">
-                <div class="risk-box">
-                    <h3 style="text-align: center; color: #34495e;">Jahre (Letzte 10 Jahre)</h3>
+                <div class="risk-box" style="flex: 1 1 100%;">
                     <div style="position: relative; height: 45vh;">
                         <canvas id="riskYearsChart"></canvas>
                     </div>
                 </div>
-                <div class="risk-box">
-                    <h3 style="text-align: center; color: #34495e;">Monate (Letzte 12 Monate)</h3>
-                    <div style="position: relative; height: 45vh;">
-                        <canvas id="riskMonthsChart"></canvas>
-                    </div>
+            </div>
+
+            <!-- NEU: Manuelle Speicher-Slots & Backup -->
+            <hr style="margin: 40px 0; border: 1px solid #ecf0f1;">
+            <h2 style="text-align: center; color: #2c3e50;">Meine manuellen Speicher-Slots (Verlauf)</h2>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Speichere den aktuellen Live-Stand lokal in deinem Browser. Nutze die Backup-Funktion, um deine Daten vor dem versehentlichen Löschen des Caches zu schützen.</p>
+            
+            <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="back-btn btn-green" onclick="saveCurrentState()">💾 Aktuellen Stand speichern</button>
+                <button class="back-btn btn-blue" onclick="exportHistory()">📥 Backup exportieren</button>
+                <button class="back-btn btn-blue" onclick="document.getElementById('importFile').click()">📤 Backup importieren</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="importHistory(event)">
+            </div>
+            
+            <div class="risk-box" style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column;">
+                <div style="position: relative; height: 40vh;">
+                    <canvas id="customHistoryChart"></canvas>
                 </div>
+                <button class="btn-red" onclick="clearCustomHistory()" style="align-self: flex-end;">🗑️ Historie löschen</button>
             </div>
         </div>
     </div>
 
     <!-- Detail Ansicht -->
     <div id="detailView">
-        <button class="back-btn" onclick="closeDetail()">
+        <button class="back-btn" onclick="closeDetail()" style="margin-bottom: 20px;">
             <span>&#8592;</span> Zurück zum Dashboard
         </button>
         <h2 id="detailTitle">Metrik Detailansicht</h2>
@@ -545,19 +534,9 @@
             document.getElementById('subStatus').innerText = `Live-Daten von data.json (Stand: ${data.last_update || 'Aktuell'})`;
 
             const mapping = {
-                'shiller_kgv': 'shillerValue',
-                'sp500': 'val-sp500',
-                'nasdaq': 'val-nasdaq',
-                'dax': 'val-dax',
-                'mdax': 'val-mdax',
-                'stoxx': 'val-stoxx',
-                'nikkei': 'val-nikkei',
-                'hangseng': 'val-hangseng',
-                'msci': 'val-msci',
-                'ftse': 'val-ftse',
-                'vix': 'val-vix',
-                'copper': 'val-copper',
-                'eurusd': 'val-eurusd'
+                'shiller_kgv': 'shillerValue', 'sp500': 'val-sp500', 'nasdaq': 'val-nasdaq', 'dax': 'val-dax',
+                'mdax': 'val-mdax', 'stoxx': 'val-stoxx', 'nikkei': 'val-nikkei', 'hangseng': 'val-hangseng',
+                'msci': 'val-msci', 'ftse': 'val-ftse', 'vix': 'val-vix', 'copper': 'val-copper', 'eurusd': 'val-eurusd'
             };
 
             for (const [jsonKey, elementId] of Object.entries(mapping)) {
@@ -589,13 +568,12 @@
             if (isNaN(current)) return;
 
             let color = '#2c3e50';
-            let catIndex = 2;
+            let catIndex = 2; // Default: Blau
 
             if (isIndex && !isNaN(avg12m)) {
                 let excess = (current - avg12m) / avg12m;
                 if (excess > 0.20) {
-                    color = '#e67e22'; 
-                    catIndex = 3; 
+                    color = '#e67e22'; catIndex = 3; 
                     window.currentRiskCounts[catIndex]++;
                     el.style.color = color;
                     el.style.fontWeight = 'bold';
@@ -605,10 +583,8 @@
 
             if (!isNaN(avg)) {
                 let diff = (avg === 0) ? current * 100 : ((current - avg) / Math.abs(avg)) * 100;
-                
                 if (Math.abs(diff) <= 0.5) {
-                    color = '#2980b9'; 
-                    catIndex = 2;
+                    color = '#2980b9'; catIndex = 2;
                 } else {
                     if (ideal === 'higher') {
                         if (diff > 5) { color = '#1e8449'; catIndex = 0; } 
@@ -618,13 +594,9 @@
                         if (diff < -5) { color = '#1e8449'; catIndex = 0; }
                         else if (diff < 0) { color = '#27ae60'; catIndex = 1; }
                         else { color = '#c0392b'; catIndex = 4; }
-                    } else { 
-                        color = '#f39c12'; 
-                        catIndex = 3;
-                    }
+                    } else { color = '#f39c12'; catIndex = 3; }
                 }
             }
-            
             window.currentRiskCounts[catIndex]++;
             el.style.color = color;
             el.style.fontWeight = 'bold';
@@ -635,12 +607,11 @@
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        if(event && event.currentTarget) {
-            event.currentTarget.classList.add('active');
-        }
+        if(event && event.currentTarget) event.currentTarget.classList.add('active');
         
         if (tabId === 'riskHistory') {
             renderRiskHistoryCharts();
+            renderCustomHistoryChart();
         }
     }
 
@@ -657,86 +628,59 @@
         document.getElementById('detailDescription').innerText = descriptions[title] || 'Detaillierte historische Makro-Analyse.';
 
         let labels = [], dataCurve = [];
-
-        // Zuordnung von Titel zu JSON-Key
         const titleToKey = {
-            'Shiller-KGV (CAPE)': 'shiller_kgv',
-            'S&P 500': 'sp500',
-            'Nasdaq 100': 'nasdaq',
-            'DAX 40': 'dax',
-            'MDAX': 'mdax',
-            'Euro Stoxx 50': 'stoxx',
-            'Nikkei 225': 'nikkei',
-            'Hang Seng': 'hangseng',
-            'MSCI World Index': 'msci',
-            'FTSE All-World': 'ftse',
-            'VIX (Volatilität S&P)': 'vix',
-            'Kupferpreis': 'copper',
-            'EUR/USD Wechselkurs': 'eurusd'
+            'Shiller-KGV (CAPE)': 'shiller_kgv', 'S&P 500': 'sp500', 'Nasdaq 100': 'nasdaq', 'DAX 40': 'dax',
+            'MDAX': 'mdax', 'Euro Stoxx 50': 'stoxx', 'Nikkei 225': 'nikkei', 'Hang Seng': 'hangseng',
+            'MSCI World Index': 'msci', 'FTSE All-World': 'ftse', 'VIX (Volatilität S&P)': 'vix',
+            'Kupferpreis': 'copper', 'EUR/USD Wechselkurs': 'eurusd'
         };
 
         const jsonKey = titleToKey[title];
         const historyKey = jsonKey ? jsonKey + '_history' : null;
 
-        // ECHTE Historie aus JSON laden (keine Simulationen/Schätzungen mehr!)
         if (historyKey && globalGitHubData[historyKey] && globalGitHubData[historyKey].length > 0) {
             labels = globalGitHubData[historyKey].map(item => item.date);
             dataCurve = globalGitHubData[historyKey].map(item => item.value);
         } else {
-            labels = ['Aktuell'];
-            dataCurve = [currentValue];
-        }
-
-        function calculateSMA(data, windowSize) {
-            let sma = [];
-            for (let i = 0; i < data.length; i++) {
-                if (i < windowSize - 1) sma.push(null);
-                else {
-                    let sum = 0;
-                    for (let j = 0; j < windowSize; j++) sum += data[i - j];
-                    sma.push(parseFloat((sum / windowSize).toFixed(2)));
-                }
-            }
-            return sma;
+            labels = ['Aktuell']; dataCurve = [currentValue];
         }
 
         const ctx = document.getElementById('detailChart').getContext('2d');
         if (detailChartInstance) detailChartInstance.destroy();
-
         detailChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [
-                    { label: title + ' (Realer Verlauf)', data: dataCurve, borderColor: '#2c3e50', borderWidth: 2, tension: 0.1, pointRadius: 1, fill: false },
-                    { label: '50-Tage-Linie (SMA)', data: calculateSMA(dataCurve, 10), borderColor: '#f39c12', borderWidth: 2, tension: 0.3, pointRadius: 0 },
-                    { label: '200-Tage-Linie (SMA)', data: calculateSMA(dataCurve, 30), borderColor: '#e74c3c', borderWidth: 2, tension: 0.3, pointRadius: 0 }
-                ]
+                datasets: [{ label: title, data: dataCurve, borderColor: '#2c3e50', borderWidth: 2, tension: 0.1, pointRadius: 1, fill: false }]
             },
-            options: {
-                responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-                scales: {
-                    x: { title: { display: true, text: 'Datum', font: { size: 14, weight: 'bold' } } },
-                    y: { title: { display: true, text: 'Wert', font: { weight: 'bold' } } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
     }
 
     let riskYearsChartInstance = null;
-    let riskMonthsChartInstance = null;
-
     function renderRiskHistoryCharts() {
-        let dG_years = [3, 2, 3, 2, 1, 1, 1, 2, 2, window.currentRiskCounts[0]];
-        let g_years =  [5, 4, 5, 4, 3, 2, 3, 4, 4, window.currentRiskCounts[1]];
-        let b_years =  [7, 6, 6, 6, 5, 4, 4, 5, 5, window.currentRiskCounts[2]];
-        let o_years =  [6, 7, 6, 6, 8, 9, 8, 7, 7, window.currentRiskCounts[3]];
-        let r_years =  [3, 5, 4, 6, 7, 8, 8, 6, 6, window.currentRiskCounts[4]];
+        let historyData = globalGitHubData.risk_years_history;
+        let years = [], dG_years = [], g_years = [], b_years = [], o_years = [], r_years = [];
+
+        if (historyData) {
+            years = [...historyData.years, new Date().getFullYear()];
+            dG_years = [...historyData.dark_green, window.currentRiskCounts[0]];
+            g_years =  [...historyData.green, window.currentRiskCounts[1]];
+            b_years =  [...historyData.blue, window.currentRiskCounts[2]];
+            o_years =  [...historyData.orange, window.currentRiskCounts[3]];
+            r_years =  [...historyData.red, window.currentRiskCounts[4]];
+        } else {
+            years = [new Date().getFullYear()];
+            dG_years = [window.currentRiskCounts[0]];
+            g_years = [window.currentRiskCounts[1]];
+            b_years = [window.currentRiskCounts[2]];
+            o_years = [window.currentRiskCounts[3]];
+            r_years = [window.currentRiskCounts[4]];
+        }
 
         const ctxYears = document.getElementById('riskYearsChart').getContext('2d');
         if (riskYearsChartInstance) riskYearsChartInstance.destroy();
 
-        const years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
         riskYearsChartInstance = new Chart(ctxYears, {
             type: 'bar',
             data: {
@@ -752,42 +696,117 @@
             options: {
                 responsive: true, maintainAspectRatio: false,
                 scales: {
-                    x: { stacked: true, title: { display: true, text: 'Jahr (Rechts: LIVE Daten 2026)', font: { weight: 'bold' } } },
-                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren (24)', font: { weight: 'bold' } }, max: 24 }
+                    x: { stacked: true, title: { display: true, text: 'Jahr (Oktober-Schnappschuss | Rechts: Live)', font: { weight: 'bold' } } },
+                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren', font: { weight: 'bold' } } }
                 },
-                plugins: { legend: { display: true, position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'rectRounded' } }, tooltip: { mode: 'index', intersect: false } }
+                plugins: { legend: { display: true, position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'rectRounded' } } }
             }
         });
+    }
 
-        let dG_months = [2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, window.currentRiskCounts[0]];
-        let g_months =  [4, 4, 3, 4, 3, 3, 3, 4, 3, 4, 3, window.currentRiskCounts[1]];
-        let b_months =  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, window.currentRiskCounts[2]];
-        let o_months =  [7, 7, 8, 7, 8, 7, 7, 8, 7, 7, 7, window.currentRiskCounts[3]];
-        let r_months =  [6, 6, 6, 7, 6, 7, 7, 6, 7, 6, 7, window.currentRiskCounts[4]];
+    // --- Lokale Speicherung & Backup-Funktionen ---
+    let customHistoryChartInstance = null;
 
-        const ctxMonths = document.getElementById('riskMonthsChart').getContext('2d');
-        if (riskMonthsChartInstance) riskMonthsChartInstance.destroy();
+    function saveCurrentState() {
+        const dateStr = new Date().toLocaleDateString('de-DE', { month: 'short', year: 'numeric' }); // z.B. "Okt. 2026"
+        let history = JSON.parse(localStorage.getItem('macroUserHistory')) || [];
 
-        const months = ['Nov 25', 'Dez 25', 'Jan 26', 'Feb 26', 'Mär 26', 'Apr 26', 'Mai 26', 'Jun 26', 'Jul 26', 'Aug 26', 'Sep 26', 'Okt 26'];
-        riskMonthsChartInstance = new Chart(ctxMonths, {
+        const existingIndex = history.findIndex(item => item.date === dateStr);
+        const newData = { date: dateStr, counts: [...window.currentRiskCounts] };
+
+        if(existingIndex >= 0) {
+            history[existingIndex] = newData; 
+        } else {
+            history.push(newData);
+        }
+
+        localStorage.setItem('macroUserHistory', JSON.stringify(history));
+        alert(`Stand für ${dateStr} wurde erfolgreich in deinem Browser gespeichert!`);
+        renderCustomHistoryChart();
+    }
+
+    function clearCustomHistory() {
+        if(confirm("Möchtest du deine manuell gespeicherten Verläufe wirklich komplett löschen? (Tipp: Mache vorher ein Backup!)")) {
+            localStorage.removeItem('macroUserHistory');
+            renderCustomHistoryChart();
+        }
+    }
+
+    function exportHistory() {
+        const history = localStorage.getItem('macroUserHistory');
+        if (!history) {
+            alert("Es gibt noch keine Daten zum Exportieren. Speichere zuerst einen Stand.");
+            return;
+        }
+        
+        const blob = new Blob([history], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "macro_history_backup.json";
+        document.body.appendChild(a);
+        a.click();
+        
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importHistory(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                // Validierung, ob es sich um ein Array handelt
+                if (Array.isArray(data)) {
+                    localStorage.setItem('macroUserHistory', JSON.stringify(data));
+                    alert("Backup erfolgreich importiert!");
+                    renderCustomHistoryChart();
+                } else {
+                    alert("Die Datei hat ein ungültiges Format.");
+                }
+            } catch (err) {
+                alert("Fehler beim Lesen der Datei. Ist es eine gültige JSON-Datei?");
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = ''; // Input zurücksetzen, damit dieselbe Datei nochmal gewählt werden kann
+    }
+
+    function renderCustomHistoryChart() {
+        let history = JSON.parse(localStorage.getItem('macroUserHistory')) || [];
+        
+        let labels = history.map(h => h.date);
+        let dG = history.map(h => h.counts[0]);
+        let g = history.map(h => h.counts[1]);
+        let b = history.map(h => h.counts[2]);
+        let o = history.map(h => h.counts[3]);
+        let r = history.map(h => h.counts[4]);
+
+        if(labels.length === 0) { labels = ["Noch keine Daten"]; dG=[0]; g=[0]; b=[0]; o=[0]; r=[0]; }
+
+        const ctx = document.getElementById('customHistoryChart').getContext('2d');
+        if (customHistoryChartInstance) customHistoryChartInstance.destroy();
+
+        customHistoryChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: months,
+                labels: labels,
                 datasets: [
-                    { label: 'Dunkelgrün', data: dG_months, backgroundColor: '#1e8449' },
-                    { label: 'Grün', data: g_months, backgroundColor: '#2ecc71' },
-                    { label: 'Blau', data: b_months, backgroundColor: '#2980b9' },
-                    { label: 'Orange', data: o_months, backgroundColor: '#e67e22' },
-                    { label: 'Rot', data: r_months, backgroundColor: '#e74c3c' }
+                    { label: 'Dunkelgrün', data: dG, backgroundColor: '#1e8449' },
+                    { label: 'Grün', data: g, backgroundColor: '#2ecc71' },
+                    { label: 'Blau', data: b, backgroundColor: '#2980b9' },
+                    { label: 'Orange', data: o, backgroundColor: '#e67e22' },
+                    { label: 'Rot', data: r, backgroundColor: '#e74c3c' }
                 ]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                scales: {
-                    x: { stacked: true, title: { display: true, text: 'Monat (Rechts: LIVE Daten Okt 26)', font: { weight: 'bold' } } },
-                    y: { stacked: true, title: { display: true, text: 'Anzahl Indikatoren (24)', font: { weight: 'bold' } }, max: 24 }
-                },
-                plugins: { legend: { display: true, position: 'bottom', labels: { padding: 15, usePointStyle: true, pointStyle: 'rectRounded' } }, tooltip: { mode: 'index', intersect: false } }
+                scales: { x: { stacked: true }, y: { stacked: true, max: 24 } },
+                plugins: { legend: { display: false } }
             }
         });
     }
@@ -798,15 +817,8 @@
         const ctx = el.getContext('2d');
         new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'],
-                datasets: [{ data: data, borderColor: colorCode, borderWidth: 2, tension: 0.3, pointRadius: 0, fill: false }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                scales: { x: { display: false }, y: { display: false } }, layout: { padding: 0 }
-            }
+            data: { labels: ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'], datasets: [{ data: data, borderColor: colorCode, borderWidth: 2, tension: 0.3, pointRadius: 0, fill: false }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } }, layout: { padding: 0 } }
         });
     }
 
@@ -881,11 +893,7 @@
 
         mainChart = new Chart(ctx, {
             type: 'line', data: { labels: labels, datasets: datasets },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { title: { display: true, text: `Live-Daten: ${indicatorName}`, font: { size: 16 } }, tooltip: { mode: 'index', intersect: false } },
-                scales: { y: { beginAtZero: false, title: { display: true, text: 'Prozent (%)' } } }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: `Live-Daten: ${indicatorName}`, font: { size: 16 } }, tooltip: { mode: 'index', intersect: false } }, scales: { y: { beginAtZero: false, title: { display: true, text: 'Prozent (%)' } } } }
         });
     }
 

@@ -41,7 +41,6 @@
         .loading { text-align: center; font-weight: bold; color: #e74c3c; margin-bottom: 10px; display: none; }
         #detailView { display: none; animation: fadeIn 0.3s ease-in-out; }
         
-        /* Button Styles */
         .back-btn { background-color: #2c3e50; color: white; border: none; padding: 10px 20px; font-size: 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .back-btn:hover { background-color: #1a252f; }
         .btn-green { background-color: #27ae60; }
@@ -454,10 +453,10 @@
                 </div>
             </div>
 
-            <!-- NEU: Manuelle Speicher-Slots & Backup -->
+            <!-- Manuelle Speicher-Slots & Backup -->
             <hr style="margin: 40px 0; border: 1px solid #ecf0f1;">
-            <h2 style="text-align: center; color: #2c3e50;">Meine manuellen Speicher-Slots (Verlauf)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Speichere den aktuellen Live-Stand lokal in deinem Browser. Nutze die Backup-Funktion, um deine Daten vor dem versehentlichen Löschen des Caches zu schützen.</p>
+            <h2 style="text-align: center; color: #2c3e50;">Meine manuellen Speicher-Slots (Verlauf - Max. 10 Balken, FIFO)</h2>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Jeder Klick fügt einen neuen Balken hinzu. Bei mehr als 10 Speicherungen fliegt die älteste automatisch heraus.</p>
             
             <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <button class="back-btn btn-green" onclick="saveCurrentState()">💾 Aktuellen Stand speichern</button>
@@ -568,7 +567,7 @@
             if (isNaN(current)) return;
 
             let color = '#2c3e50';
-            let catIndex = 2; // Default: Blau
+            let catIndex = 2;
 
             if (isIndex && !isNaN(avg12m)) {
                 let excess = (current - avg12m) / avg12m;
@@ -704,29 +703,31 @@
         });
     }
 
-    // --- Lokale Speicherung & Backup-Funktionen ---
+    // --- Manuelle Speicher-Slots (FIFO max 10 Einträge) ---
     let customHistoryChartInstance = null;
 
     function saveCurrentState() {
-        const dateStr = new Date().toLocaleDateString('de-DE', { month: 'short', year: 'numeric' }); // z.B. "Okt. 2026"
+        // Eindeutiger Zeitstempel mit Datum und Uhrzeit, damit jeder Klick einen neuen Balken erzeugt
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' }) + ' ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        
         let history = JSON.parse(localStorage.getItem('macroUserHistory')) || [];
 
-        const existingIndex = history.findIndex(item => item.date === dateStr);
         const newData = { date: dateStr, counts: [...window.currentRiskCounts] };
+        history.push(newData);
 
-        if(existingIndex >= 0) {
-            history[existingIndex] = newData; 
-        } else {
-            history.push(newData);
+        // FIFO: Wenn mehr als 10 Einträge, den ältesten (ersten) entfernen
+        if (history.length > 10) {
+            history.shift();
         }
 
         localStorage.setItem('macroUserHistory', JSON.stringify(history));
-        alert(`Stand für ${dateStr} wurde erfolgreich in deinem Browser gespeichert!`);
+        alert(`Neuer Stand (${dateStr}) als Balken hinzugefügt! (Max. 10 aktiv)`);
         renderCustomHistoryChart();
     }
 
     function clearCustomHistory() {
-        if(confirm("Möchtest du deine manuell gespeicherten Verläufe wirklich komplett löschen? (Tipp: Mache vorher ein Backup!)")) {
+        if(confirm("Möchtest du deine manuell gespeicherten Balken wirklich komplett löschen?")) {
             localStorage.removeItem('macroUserHistory');
             renderCustomHistoryChart();
         }
@@ -735,19 +736,17 @@
     function exportHistory() {
         const history = localStorage.getItem('macroUserHistory');
         if (!history) {
-            alert("Es gibt noch keine Daten zum Exportieren. Speichere zuerst einen Stand.");
+            alert("Es gibt noch keine Daten zum Exportieren.");
             return;
         }
         
         const blob = new Blob([history], { type: "application/json" });
         const url = URL.createObjectURL(blob);
-        
         const a = document.createElement('a');
         a.href = url;
         a.download = "macro_history_backup.json";
         document.body.appendChild(a);
         a.click();
-        
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
@@ -760,8 +759,11 @@
         reader.onload = function(e) {
             try {
                 const data = JSON.parse(e.target.result);
-                // Validierung, ob es sich um ein Array handelt
                 if (Array.isArray(data)) {
+                    // Falls das Backup mehr als 10 hat, beim Import direkt auf max 10 beschränken (FIFO)
+                    if (data.length > 10) {
+                        data = data.slice(data.length - 10);
+                    }
                     localStorage.setItem('macroUserHistory', JSON.stringify(data));
                     alert("Backup erfolgreich importiert!");
                     renderCustomHistoryChart();
@@ -769,11 +771,11 @@
                     alert("Die Datei hat ein ungültiges Format.");
                 }
             } catch (err) {
-                alert("Fehler beim Lesen der Datei. Ist es eine gültige JSON-Datei?");
+                alert("Fehler beim Lesen der Datei.");
             }
         };
         reader.readAsText(file);
-        event.target.value = ''; // Input zurücksetzen, damit dieselbe Datei nochmal gewählt werden kann
+        event.target.value = '';
     }
 
     function renderCustomHistoryChart() {
@@ -805,7 +807,7 @@
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                scales: { x: { stacked: true }, y: { stacked: true, max: 24 } },
+                scales: { x: { stacked: true }, y: { stacked: true, max: 29 } },
                 plugins: { legend: { display: false } }
             }
         });

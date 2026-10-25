@@ -456,7 +456,7 @@
             <!-- Manuelle Speicher-Slots & Backup -->
             <hr style="margin: 40px 0; border: 1px solid #ecf0f1;">
             <h2 style="text-align: center; color: #2c3e50;">Meine manuellen Speicher-Slots (Verlauf - Max. 10 Balken, FIFO)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Jeder Klick fügt einen neuen Balken hinzu. Bei mehr als 10 Speicherungen fliegt die älteste automatisch heraus.</p>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Jeder Klick fügt einen neuen Balken hinzu. Bei mehr als 10 Speicherungen fliegt der älteste automatisch heraus.</p>
             
             <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <button class="back-btn btn-green" onclick="saveCurrentState()">💾 Aktuellen Stand speichern</button>
@@ -707,7 +707,6 @@
     let customHistoryChartInstance = null;
 
     function saveCurrentState() {
-        // Eindeutiger Zeitstempel mit Datum und Uhrzeit, damit jeder Klick einen neuen Balken erzeugt
         const now = new Date();
         const dateStr = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' }) + ' ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
         
@@ -716,7 +715,7 @@
         const newData = { date: dateStr, counts: [...window.currentRiskCounts] };
         history.push(newData);
 
-        // FIFO: Wenn mehr als 10 Einträge, den ältesten (ersten) entfernen
+        // FIFO: Wenn mehr als 10 Einträge, den ältesten entfernen
         if (history.length > 10) {
             history.shift();
         }
@@ -734,7 +733,7 @@
     }
 
     function exportHistory() {
-        const history = localStorage.getItem('macroUserHistory');
+        let history = localStorage.getItem('macroUserHistory');
         if (!history) {
             alert("Es gibt noch keine Daten zum Exportieren.");
             return;
@@ -758,9 +757,8 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
-                const data = JSON.parse(e.target.result);
+                let data = JSON.parse(e.target.result);
                 if (Array.isArray(data)) {
-                    // Falls das Backup mehr als 10 hat, beim Import direkt auf max 10 beschränken (FIFO)
                     if (data.length > 10) {
                         data = data.slice(data.length - 10);
                     }
@@ -788,7 +786,10 @@
         let o = history.map(h => h.counts[3]);
         let r = history.map(h => h.counts[4]);
 
-        if(labels.length === 0) { labels = ["Noch keine Daten"]; dG=[0]; g=[0]; b=[0]; o=[0]; r=[0]; }
+        if(labels.length === 0) { 
+            labels = ["Noch keine Daten"]; 
+            dG=[0]; g=[0]; b=[0]; o=[0]; r=[0]; 
+        }
 
         const ctx = document.getElementById('customHistoryChart').getContext('2d');
         if (customHistoryChartInstance) customHistoryChartInstance.destroy();
@@ -806,9 +807,22 @@
                 ]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { x: { stacked: true }, y: { stacked: true, max: 29 } },
-                plugins: { legend: { display: false } }
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: { 
+                    x: { 
+                        stacked: true,
+                        grid: { display: false }
+                    }, 
+                    y: { 
+                        stacked: true, 
+                        max: 29,
+                        beginAtZero: true
+                    } 
+                },
+                plugins: { 
+                    legend: { display: true, position: 'bottom' } 
+                }
             }
         });
     }

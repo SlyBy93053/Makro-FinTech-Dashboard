@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profi Makro-Risiko Dashboard V10.2 (Automated JSON)</title>
+    <title>Profi Makro-Risiko Dashboard V10.3</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; }
@@ -33,7 +33,7 @@
         .card-sparkline-container { display: flex; flex-direction: column; align-items: center; pointer-events: none; width: 90px; }
         .card-sparkline { width: 90px; height: 40px; position: relative; }
         .sparkline-label { font-size: 9px; color: #95a5a6; margin-top: 2px; }
-        .no-data { font-size: 10px; color: #e74c3c; font-weight: bold; text-align: center; width: 100%; padding: 10px 0; }
+        .no-data { font-size: 11px; color: #e74c3c; font-weight: bold; text-align: center; width: 100%; padding: 15px 0; background: #fadbd8; border-radius: 4px; }
         .controls { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
         select { padding: 10px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc; }
         .chart-container-large { position: relative; height: 55vh; width: 100%; }
@@ -76,68 +76,66 @@
                 <div class="grid">
                     <div class="card" onclick="openDetail('BIP-Wachstum (Welt)')">
                         <h3>BIP-Wachstum (Welt)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-gdp_world">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="gdp_world">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="gdp_world">-</span></strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Globale Inflation')">
                         <h3>Globale Inflation</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-inflation_world">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="inflation_world">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="inflation_world">-</span></strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('VIX (Volatilität S&P)')">
                         <h3>VIX (Volatilität S&P)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-vix">
                             <div class="card-info">
                                 <div id="val-vix" class="value" data-json-key="vix">-</div>
                                 <div class="avg"><strong>15J-Ø: 18.5</strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-vix"><div class="card-sparkline"><canvas id="spark-glb-vix"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-vix"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Kupferpreis')">
                         <h3>Kupferpreis</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-copper">
                             <div class="card-info">
                                 <div id="val-copper" class="value" data-json-key="copper">-</div>
                                 <div class="avg"><strong>15J-Ø: $3.20</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-copper"><div class="card-sparkline"><canvas id="spark-glb-cop"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-copper"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('MSCI World Index')">
                         <h3>MSCI World (ETF)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-msci">
                             <div class="card-info">
                                 <div id="val-msci" class="value" data-json-key="msci" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: ~100</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-msci"><div class="card-sparkline"><canvas id="idx-glb-msci"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-msci"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('FTSE All-World')">
                         <h3>FTSE All-World (ETF)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-ftse">
                             <div class="card-info">
                                 <div id="val-ftse" class="value" data-json-key="ftse" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: ~80</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-ftse"><div class="card-sparkline"><canvas id="idx-glb-ftse"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ftse"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                 </div>
@@ -149,68 +147,65 @@
                 <div class="grid">
                     <div class="card" onclick="openDetail('10J Bundesanleihe')">
                         <h3>10J Bundesanleihe (Zins)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-bund">
                             <div class="card-info">
                                 <div id="val-bund" class="value" data-json-key="bund">-</div>
                                 <div class="avg"><strong>15J-Ø: 1,20 %</strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-bund"><div class="card-sparkline"><canvas id="spark-ger-bond"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-bund"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Arbeitslosenquote (DE)')">
                         <h3>Arbeitslosenquote (DE)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-ger_unemp">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="ger_unemp">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="ger_unemp">-</span></strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Immobilienpreise (DE)')">
                         <h3>Immobilienpreise (YoY)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-ger_prop">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="ger_prop">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="ger_prop">-</span></strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Staatsschulden (DE)')">
                         <h3>Staatsschulden (% BIP)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-ger_debt">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="ger_debt">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="ger_debt">-</span></strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('DAX 40')">
                         <h3>DAX 40</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-dax">
                             <div class="card-info">
                                 <div id="val-dax" class="value" data-json-key="dax" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: 11.500</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-dax"><div class="card-sparkline"><canvas id="idx-ger-dax"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-dax"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('MDAX')">
                         <h3>MDAX</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-mdax">
                             <div class="card-info">
                                 <div id="val-mdax" class="value" data-json-key="mdax" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: 21.000</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-mdax"><div class="card-sparkline"><canvas id="idx-ger-mdax"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-mdax"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                 </div>
@@ -222,68 +217,65 @@
                 <div class="grid">
                     <div class="card" onclick="openDetail('FED-Leitzins')">
                         <h3>FED-Leitzins</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-usa_fed">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="usa_fed">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="usa_fed">-</span></strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Shiller-KGV (CAPE)')">
                         <h3>Shiller-KGV (CAPE)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-shiller_kgv">
                             <div class="card-info">
                                 <div id="shillerValue" class="value" data-json-key="shiller_kgv">-</div>
                                 <div class="avg"><strong>15J-Ø: 28.0</strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Arbeitslosenquote (USA)')">
                         <h3>Arbeitslosenquote</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-usa_unemp">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="usa_unemp">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="usa_unemp">-</span></strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('10J US-Staatsanleihe')">
                         <h3>10J US-Staatsanleihe</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-ust10">
                             <div class="card-info">
                                 <div id="val-ust10" class="value" data-json-key="ust10">-</div>
                                 <div class="avg"><strong>15J-Ø: 2,80 %</strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-ust10"><div class="card-sparkline"><canvas id="spark-usa-bond"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-ust10"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('S&P 500')">
                         <h3>S&P 500</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-sp500">
                             <div class="card-info">
                                 <div id="val-sp500" class="value" data-json-key="sp500" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: 3.200</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-sp500"><div class="card-sparkline"><canvas id="idx-usa-sp500"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-sp500"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Nasdaq 100')">
                         <h3>Nasdaq 100</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-nasdaq">
                             <div class="card-info">
                                 <div id="val-nasdaq" class="value" data-json-key="nasdaq" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: 9.500</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-nasdaq"><div class="card-sparkline"><canvas id="idx-usa-nasdaq"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-nasdaq"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                 </div>
@@ -295,57 +287,54 @@
                 <div class="grid">
                     <div class="card" onclick="openDetail('EZB-Leitzins')">
                         <h3>EZB-Leitzins</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-eur_ezb">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="eur_ezb">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="eur_ezb">-</span></strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Einkaufsmanager (PMI) Europa')">
                         <h3>Einkaufsmanager (PMI)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-eur_pmi">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="eur_pmi">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="eur_pmi">-</span></strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('EUR/USD Wechselkurs')">
                         <h3>EUR/USD Wechselkurs</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-eurusd">
                             <div class="card-info">
                                 <div id="val-eurusd" class="value" data-json-key="eurusd">-</div>
                                 <div class="avg"><strong>15J-Ø: 1,15</strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-eurusd"><div class="card-sparkline"><canvas id="spark-eur-usd"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-eurusd"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Staatsschulden (% BIP) Europa')">
                         <h3>Staatsschulden (% BIP)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-eur_debt">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="eur_debt">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="eur_debt">-</span></strong></div>
                                 <div class="ideal ideal-lower">Ideal: Kleiner</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Euro Stoxx 50')">
                         <h3>Euro Stoxx 50</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-stoxx">
                             <div class="card-info">
                                 <div id="val-stoxx" class="value" data-json-key="stoxx" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: 3.400</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-stoxx"><div class="card-sparkline"><canvas id="idx-eur-stoxx"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-stoxx"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                 </div>
@@ -357,68 +346,64 @@
                 <div class="grid">
                     <div class="card" onclick="openDetail('BoJ-Leitzins (Japan)')">
                         <h3>BoJ-Leitzins (Japan)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-asi_boj">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="asi_boj">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="asi_boj">-</span></strong></div>
                                 <div class="ideal ideal-stable">Ideal: Stabil</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Geldmenge M2 (China)')">
                         <h3>Geldmenge M2 (China)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-asi_m2">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="asi_m2">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="asi_m2">-</span></strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('BIP-Wachstum (Indien)')">
                         <h3>BIP-Wachstum (Indien)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-asi_gdp">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="asi_gdp">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="asi_gdp">-</span></strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Immobilienpreise (China)')">
                         <h3>Immobilienpreise (China)</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-asi_prop">
                             <div class="card-info">
                                 <div class="value macro-field" data-macro="asi_prop">-</div>
                                 <div class="avg"><strong>15J-Ø: <span class="macro-avg" data-macro="asi_prop">-</span></strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container"><div class="no-data">Keine Daten vorhanden</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Nikkei 225')">
                         <h3>Nikkei 225</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-nikkei">
                             <div class="card-info">
                                 <div id="val-nikkei" class="value" data-json-key="nikkei" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: 22.000</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-nikkei"><div class="card-sparkline"><canvas id="idx-asi-nikkei"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-nikkei"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                     <div class="card" onclick="openDetail('Hang Seng')">
                         <h3>Hang Seng</h3>
-                        <div class="card-content">
+                        <div class="card-content" id="card-hangseng">
                             <div class="card-info">
                                 <div id="val-hangseng" class="value" data-json-key="hangseng" data-is-index="true">-</div>
                                 <div class="avg"><strong>15J-Ø: 24.000</strong></div>
                                 <div class="ideal ideal-higher">Ideal: Größer</div>
                             </div>
-                            <div class="card-sparkline-container" id="container-hangseng"><div class="card-sparkline"><canvas id="idx-asi-hang"></canvas></div><div class="sparkline-label">12 Monate</div></div>
+                            <div class="card-sparkline-container"><div class="card-sparkline"><canvas id="spark-hangseng"></canvas></div><div class="sparkline-label">12 Monate</div></div>
                         </div>
                     </div>
                 </div>
@@ -444,7 +429,7 @@
         <!-- TAB 3: RISIKO-VERTEILUNG -->
         <div id="riskHistory" class="tab-content">
             <h2 style="text-align: center; color: #2c3e50;">Makro-Risiko Anhäufung (Letzte 10 Jahre - Oktoberwerte)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die Balken zeigen die Auswertung des Python-Skripts (jeweils der letzte Handelstag im Oktober).<br><strong>Der letzte Balken rechts zeigt das exakt berechnete Live-Ergebnis!</strong></p>
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">Die Balken zeigen die Auswertung des Python-Skripts.<br><strong>Der letzte Balken rechts zeigt das exakt berechnete Live-Ergebnis!</strong></p>
             
             <div class="risk-container-dual">
                 <div class="risk-box" style="flex: 1 1 100%;">
@@ -454,10 +439,8 @@
                 </div>
             </div>
 
-            <!-- Manuelle Speicher-Slots & Backup -->
             <hr style="margin: 40px 0; border: 1px solid #ecf0f1;">
-            <h2 style="text-align: center; color: #2c3e50;">Meine manuellen Speicher-Slots (Verlauf - Max. 10 Balken, FIFO)</h2>
-            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Jeder Klick fügt einen neuen Balken hinzu. Bei mehr als 10 Speicherungen fliegt der älteste automatisch heraus.</p>
+            <h2 style="text-align: center; color: #2c3e50;">Meine manuellen Speicher-Slots (Max. 10 Balken, FIFO)</h2>
             
             <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <button class="back-btn btn-green" onclick="saveCurrentState()">💾 Aktuellen Stand speichern</button>
@@ -493,35 +476,35 @@
     window.currentRiskCounts = [0, 0, 0, 0, 0];
 
     const descriptions = {
-        'BIP-Wachstum (Welt)': 'Das weltweite Bruttoinlandsprodukt misst den Gesamtwert aller Güter und Dienstleistungen, die global innerhalb eines Jahres produziert werden.',
-        'Globale Inflation': 'Die durchschnittliche Teuerungsrate der Verbraucherpreise weltweit.',
-        'VIX (Volatilität S&P)': 'Das "Angstbarometer" der Wall Street.',
-        'Kupferpreis': 'Kupfer ist ein Konjunkturbarometer für die globale Industrienachfrage.',
-        'MSCI World Index': 'Bildet über 1.400 Unternehmen aus 23 Industrieländern ab.',
-        'FTSE All-World': 'Umfasst rund 4.300 Unternehmen aus Industrie- und Schwellenländern.',
-        '10J Bundesanleihe': 'Die Rendite von deutschen Staatsanleihen mit 10 Jahren Laufzeit.',
-        'Arbeitslosenquote (DE)': 'Anteil der registrierten Arbeitslosen in Deutschland.',
-        'Immobilienpreise (DE)': 'Preisentwicklung (YoY) von Wohnimmobilien in Deutschland.',
-        'Staatsschulden (DE)': 'Gesamtverschuldung im Verhältnis zur Wirtschaftsleistung (BIP) Deutschlands.',
-        'DAX 40': 'Leitindex der 40 größten deutschen Unternehmen.',
-        'MDAX': 'Index für mittelgroße deutsche Unternehmen.',
-        'FED-Leitzins': 'The Leitzins der US-Notenbank.',
-        'Shiller-KGV (CAPE)': 'Das konjunkturbereinigte Kurs-Gewinn-Verhältnis für den S&P 500.',
-        'Arbeitslosenquote (USA)': 'Zentraler Indikator für den US-Konsum.',
-        '10J US-Staatsanleihe': 'Wichtigste Benchmark für globale Anleihenmärkte.',
-        'S&P 500': 'Die 500 größten US-Unternehmen.',
-        'Nasdaq 100': 'Die 100 größten Tech-Unternehmen der USA.',
-        'EZB-Leitzins': 'Der Leitzins der Europäischen Zentralbank.',
-        'Einkaufsmanager (PMI) Europa': 'Industriestimmung; Werte über 50 bedeuten Wachstum.',
-        'EUR/USD Wechselkurs': 'Wert des Euro gegenüber dem US-Dollar.',
-        'Staatsschulden (% BIP) Europa': 'Aggregierte Brutto-Staatsschulden der Euro-Länder.',
-        'Euro Stoxx 50': 'Die 50 größten Unternehmen der Eurozone.',
-        'BoJ-Leitzins (Japan)': 'Leitzins der Bank of Japan.',
-        'Geldmenge M2 (China)': 'Geldmenge und Liquidität in China.',
-        'BIP-Wachstum (Indien)': 'Wachstum der indischen Wirtschaft.',
-        'Immobilienpreise (China)': 'Neubaupreise in den 70 größten chinesischen Städten.',
-        'Nikkei 225': 'Wichtigster Aktienindex Japans.',
-        'Hang Seng': 'Leitindex der Börse Hongkong.'
+        'BIP-Wachstum (Welt)': 'Weltweites Bruttoinlandsprodukt.',
+        'Globale Inflation': 'Durchschnittliche weltweite Teuerungsrate.',
+        'VIX (Volatilität S&P)': 'Angstbarometer der Wall Street.',
+        'Kupferpreis': 'Konjunkturbarometer für Industrienachfrage.',
+        'MSCI World Index': 'Industrieländer Aktienindex.',
+        'FTSE All-World': 'Weltweiter Aktienindex.',
+        '10J Bundesanleihe': 'Rendite deutscher Staatsanleihen.',
+        'Arbeitslosenquote (DE)': 'Registrierte Arbeitslose in Deutschland.',
+        'Immobilienpreise (DE)': 'Preisentwicklung deutscher Wohnimmobilien.',
+        'Staatsschulden (DE)': 'Verschuldung im Verhältnis zum BIP.',
+        'DAX 40': 'Deutscher Leitindex.',
+        'MDAX': 'Mittelständische deutsche Unternehmen.',
+        'FED-Leitzins': 'Leitzins der US-Notenbank.',
+        'Shiller-KGV (CAPE)': 'Konjunkturbereinigtes KGV für den S&P 500.',
+        'Arbeitslosenquote (USA)': 'US-Arbeitsmarktindikator.',
+        '10J US-Staatsanleihe': 'Benchmark für US-Anleihen.',
+        'S&P 500': 'Größte US-Unternehmen.',
+        'Nasdaq 100': 'US-Tech-Index.',
+        'EZB-Leitzins': 'Leitzins der EZB.',
+        'Einkaufsmanager (PMI) Europa': 'Industriestimmung in Europa.',
+        'EUR/USD Wechselkurs': 'Wechselkurs Euro zu US-Dollar.',
+        'Staatsschulden (% BIP) Europa': 'Euro-Schuldenstand.',
+        'Euro Stoxx 50': 'Top 50 Unternehmen der Eurozone.',
+        'BoJ-Leitzins (Japan)': 'Leitzins Bank of Japan.',
+        'Geldmenge M2 (China)': 'Liquidität in China.',
+        'BIP-Wachstum (Indien)': 'Wirtschaftswachstum Indien.',
+        'Immobilienpreise (China)': 'Chinesischer Immobilienmarkt.',
+        'Nikkei 225': 'Japanischer Aktienindex.',
+        'Hang Seng': 'Börse Hongkong.'
     };
 
     async function loadGitHubData() {
@@ -533,51 +516,60 @@
 
             document.getElementById('subStatus').innerText = `Live-Daten von data.json (Stand: ${data.last_update || 'Aktuell'})`;
 
-            // 1. Marktdaten / Ticker befüllen
-            document.querySelectorAll('[data-json-key]').forEach(el => {
-                const key = el.getAttribute('data-json-key');
+            // 1. Marktdaten / Ticker prüfen und befüllen
+            const tickerKeys = ['vix', 'copper', 'msci', 'ftse', 'bund', 'dax', 'mdax', 'ust10', 'sp500', 'nasdaq', 'eurusd', 'stoxx', 'nikkei', 'hangseng', 'shiller_kgv'];
+            tickerKeys.forEach(key => {
+                const el = document.querySelector(`[data-json-key="${key}"]`);
+                const cardContent = document.getElementById('card-' + key);
+                
                 if (data[key] !== undefined && data[key] !== null) {
                     let val = data[key];
-                    el.innerText = (['eurusd', 'copper', 'vix', 'bund', 'ust10', 'shiller_kgv'].includes(key)) ? val : val.toLocaleString('de-DE');
-                    el.setAttribute('data-current', val);
+                    if(el) {
+                        el.innerText = (['eurusd', 'copper', 'vix', 'bund', 'ust10', 'shiller_kgv'].includes(key)) ? val : val.toLocaleString('de-DE');
+                        el.setAttribute('data-current', val);
+                    }
+                    // Sparkline oder Historie prüfen
+                    const historyKey = key + '_history';
+                    if (cardContent && data[historyKey] && data[historyKey].length > 0) {
+                        const values = data[historyKey].map(item => item.value);
+                        createSparklineFromData('spark-' + key, values);
+                    } else if (cardContent && !['shiller_kgv'].includes(key)) {
+                        // Wenn keine Historie da ist, Hinweis einblenden
+                        const sparkContainer = cardContent.querySelector('.card-sparkline-container');
+                        if(sparkContainer) sparkContainer.innerHTML = '<div class="no-data">Keine Daten vorhanden</div>';
+                    }
                 } else {
-                    el.innerText = "N/A";
+                    // Wenn der Wert komplett fehlt -> Ganze Kachel auf "Keine Daten" setzen
+                    if (cardContent) {
+                        cardContent.innerHTML = '<div class="no-data">Keine Daten vorhanden</div>';
+                    }
                 }
             });
 
-            // 2. Makro-Metriken aus JSON befüllen
+            // 2. Makro-Metriken prüfen und befüllen
             if (data.macro_metrics) {
-                document.querySelectorAll('.macro-field').forEach(el => {
-                    const macroKey = el.getAttribute('data-macro');
-                    if (data.macro_metrics[macroKey]) {
-                        el.innerText = data.macro_metrics[macroKey].val;
-                        el.setAttribute('data-current', parseFloat(data.macro_metrics[macroKey].val.replace(',', '.').replace('%', '')) || 0);
-                        el.setAttribute('data-avg', parseFloat(data.macro_metrics[macroKey].avg.replace(',', '.').replace('%', '')) || 0);
-                        el.setAttribute('data-ideal', data.macro_metrics[macroKey].ideal);
-                    }
-                });
-                document.querySelectorAll('.macro-avg').forEach(el => {
-                    const macroKey = el.getAttribute('data-macro');
-                    if (data.macro_metrics[macroKey]) {
-                        el.innerText = data.macro_metrics[macroKey].avg;
+                const macroKeys = ['gdp_world', 'inflation_world', 'ger_unemp', 'ger_prop', 'ger_debt', 'usa_fed', 'usa_unemp', 'eur_ezb', 'eur_pmi', 'eur_debt', 'asi_boj', 'asi_m2', 'asi_gdp', 'asi_prop'];
+                macroKeys.forEach(macroKey => {
+                    const cardContent = document.getElementById('card-' + macroKey);
+                    if (data.macro_metrics[macroKey] && data.macro_metrics[macroKey].val) {
+                        const mData = data.macro_metrics[macroKey];
+                        const valEl = cardContent.querySelector('.macro-field');
+                        const avgEl = cardContent.querySelector('.macro-avg');
+                        if(valEl) {
+                            valEl.innerText = mData.val;
+                            valEl.setAttribute('data-current', parseFloat(mData.val.replace(',', '.').replace('%', '')) || 0);
+                            valEl.setAttribute('data-avg', parseFloat(mData.avg.replace(',', '.').replace('%', '')) || 0);
+                            valEl.setAttribute('data-ideal', mData.ideal);
+                        }
+                        if(avgEl) avgEl.innerText = mData.avg;
+                    } else {
+                        // Wenn Makro-Daten fehlen -> Hinweis in die Kachel
+                        if (cardContent) {
+                            cardContent.innerHTML = '<div class="no-data">Keine Daten vorhanden</div>';
+                        }
                     }
                 });
             }
-
-            // 3. Sparklines für Ticker zeichnen oder "Keine Daten" anzeigen
-            const tickerKeys = ['vix', 'copper', 'msci', 'ftse', 'bund', 'dax', 'mdax', 'ust10', 'sp500', 'nasdaq', 'eurusd', 'stoxx', 'nikkei', 'hangseng'];
-            tickerKeys.forEach(key => {
-                const historyKey = key + '_history';
-                const container = document.getElementById('container-' + key);
-                if (container) {
-                    if (data[historyKey] && data[historyKey].length > 0) {
-                        const values = data[historyKey].map(item => item.value);
-                        createSparklineFromData('spark-' + key, values);
-                    } else {
-                        container.innerHTML = '<div class="no-data">Keine Daten vorhanden</div>';
-                    }
-                }
-            });
 
         } catch (e) {
             document.getElementById('subStatus').innerText = "Live-Daten via JSON fehlgeschlagen - Fallback aktiv";
@@ -592,7 +584,6 @@
             const current = parseFloat(el.getAttribute('data-current'));
             const avg = parseFloat(el.getAttribute('data-avg'));
             const ideal = el.getAttribute('data-ideal'); 
-            const isIndex = el.getAttribute('data-is-index') === 'true';
 
             if (isNaN(current)) {
                 window.currentRiskCounts[2]++;
